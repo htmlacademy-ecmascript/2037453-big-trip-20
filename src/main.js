@@ -1,9 +1,7 @@
-import SortPresenter from './presenter/sort-presenter';
-import EventsListPresenter from './presenter/events-list-presenter';
+import ContentPresenter from './presenter/content-presenter';
 
-const container = document.querySelector('.trip-events');
-const sortPresenter = new SortPresenter({container});
-sortPresenter.init();
-const eventsListPresenter = new EventsListPresenter({container});
+const filterContainer = document.querySelector('.trip-controls__filters');
+const contentContainer = document.querySelector('.trip-events');
+const eventsListPresenter = new ContentPresenter({filterContainer, contentContainer});
 eventsListPresenter.init();
 
