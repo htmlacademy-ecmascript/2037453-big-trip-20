@@ -26,7 +26,19 @@ function createSortTemplate() {
 }
 
 export default class SortView {
+  getTemplate() {
+    return createSortTemplate();
+  }
+
   getElement() {
-    return createElement(createSortTemplate());
+    if(!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
   }
 }

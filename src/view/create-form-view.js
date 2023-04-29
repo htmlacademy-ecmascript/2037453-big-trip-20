@@ -5,7 +5,19 @@ function createAddFormTemplate() {
 }
 
 export default class AddFormView {
+  getTemplate() {
+    return createAddFormTemplate();
+  }
+
   getElement() {
-    return createElement(createAddFormTemplate());
+    if(!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
   }
 }

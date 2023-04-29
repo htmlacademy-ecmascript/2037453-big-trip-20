@@ -159,7 +159,19 @@ function createEditFormTemplate() {
 }
 
 export default class EditFormView {
+  getTemplate() {
+    return createEditFormTemplate();
+  }
+
   getElement() {
-    return createElement(createEditFormTemplate());
+    if(!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
   }
 }

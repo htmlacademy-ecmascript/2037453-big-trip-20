@@ -27,7 +27,19 @@ function createFilterTemplate() {
 }
 
 export default class FilterView {
+  getTemplate() {
+    return createFilterTemplate();
+  }
+
   getElement() {
-    return createElement(createFilterTemplate());
+    if(!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
   }
 }

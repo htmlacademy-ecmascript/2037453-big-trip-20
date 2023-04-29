@@ -41,7 +41,19 @@ function createRoutePointTemplate() {
 }
 
 export default class RoutePointView {
+  getTemplate() {
+    return createRoutePointTemplate();
+  }
+
   getElement() {
-    return createElement(createRoutePointTemplate());
+    if(!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
   }
 }

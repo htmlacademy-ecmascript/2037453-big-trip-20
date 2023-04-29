@@ -13,7 +13,6 @@ export default class ContentPresenter {
   #editFormComponent = new EditFormView();
   #filterContainer = null;
   #contentContainer = null;
-  #eventsListContainer = null;
 
   constructor({filterContainer, contentContainer}) {
     this.#filterContainer = filterContainer;
@@ -28,10 +27,10 @@ export default class ContentPresenter {
     render(this.#filterComponent, this.#filterContainer);
     render(this.#sortComponent, this.#contentContainer);
     render(this.#eventsListComponent, this.#contentContainer);
-    this.#eventsListContainer = document.querySelector('.trip-events__list');
-    render(this.#editFormComponent, this.#eventsListContainer);
+    render(this.#editFormComponent, this.#eventsListComponent.getElement());
     for (let i = 0; i < 3; i++) {
-      render(this.#routePointerComponent, this.#eventsListContainer);
+      render(this.#routePointerComponent, this.#eventsListComponent.getElement());
+      this.#routePointerComponent.removeElement();
     }
   }
 }
