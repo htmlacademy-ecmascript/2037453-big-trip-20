@@ -1,10 +1,8 @@
 const url = window.location.href;
-export default class EventsDataModel {
+export default class RoutePointsModel {
   #routePoints = null;
   #offers = null;
-
   #destinations = null;
-
   getRoutePoints() {
     this.#routePoints = fetch(`${url}mockdata/points.json`)
       .then((resp) => resp.json())

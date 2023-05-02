@@ -1,21 +1,21 @@
 import {render} from '../render.js';
 import FilterView from '../view/filters-view';
 import SortView from '../view/sort-view';
-import EventsListView from '../view/events-list-view';
+import RoutePointsListView from '../view/route-points-list-view';
 import RoutePointView from '../view/route-point-view';
 import EditFormView from '../view/edit-form-view';
-import EventsDataModel from '../models/events-data-model';
+import RoutePointsModel from '../models/route-points-model';
 
 export default class ContentPresenter {
-  #eventDataModel = new EventsDataModel();
+  #routePointsModel = new RoutePointsModel();
   #filterComponent = new FilterView();
   #sortComponent = new SortView();
-  #eventsListComponent = new EventsListView();
+  #routeListComponent = new RoutePointsListView();
   #routePointerComponent = null;
   #editFormComponent = null;
   #filterContainer = null;
   #contentContainer = null;
-  #eventsData = null;
+  #routePointsData = null;
   #offersData = null;
   #destinationsData = null;
 
@@ -25,33 +25,32 @@ export default class ContentPresenter {
   }
 
   async init() {
-    this.#eventsData = await this.#eventDataModel.getRoutePoints();
-    this.#offersData = await this.#eventDataModel.getOffers();
-    this.#destinationsData = await this.#eventDataModel.getDestinations();
+    this.#routePointsData = await this.#routePointsModel.getRoutePoints();
+    this.#offersData = await this.#routePointsModel.getOffers();
+    this.#destinationsData = await this.#routePointsModel.getDestinations();
     this.#renderContent();
   }
 
   #renderContent() {
     render(this.#filterComponent, this.#filterContainer);
     render(this.#sortComponent, this.#contentContainer);
-    render(this.#eventsListComponent, this.#contentContainer);
-
-    for (let i = 0; i < this.#eventsData.length; i++) {
-      const event = this.#eventsData[i];
-      const props = {event};
-      if(i === 0) {
-        props.offersList = this.#offersData;
-        props.destination = this.#destinationsData;
-        this.#editFormComponent = new EditFormView(props);
-        render(this.#editFormComponent, this.#eventsListComponent.getElement());
-        this.#editFormComponent.removeElement();
-      }else{
-        props.offersList = this.#offersData.find((el) => el.type === event.type);
-        props.destination = this.#destinationsData.find((el) => el.id === event.destination);
-        this.#routePointerComponent = new RoutePointView(props);
-        render(this.#routePointerComponent, this.#eventsListComponent.getElement());
-        this.#routePointerComponent.removeElement();
-      }
+    render(this.#routeListComponent, this.#contentContainer);
+    this.#editFormComponent = new EditFormView({
+      routePoint: this.#routePointsData[0],
+      offersList: this.#offersData,
+      destination: this.#destinationsData
+    });
+    render(this.#editFormComponent, this.#routeListComponent.getElement());
+    this.#editFormComponent.removeElement();
+    for (let i = 1; i < this.#routePointsData.length; i++) {
+      const routePoint = this.#routePointsData[i];
+      this.#routePointerComponent = new RoutePointView({
+        routePoint,
+        offersList: this.#offersData.find((el) => el.type === routePoint.type),
+        destination: this.#destinationsData.find((el) => el.id === routePoint.destination)
+      });
+      render(this.#routePointerComponent, this.#routeListComponent.getElement());
+      this.#routePointerComponent.removeElement();
     }
   }
 }
