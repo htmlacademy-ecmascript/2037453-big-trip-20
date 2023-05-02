@@ -1,12 +1,12 @@
 import {createElement} from '../render';
 
-function createAddFormTemplate() {
-  return '';
+function createEventsListTemplate() {
+  return '<ul class="trip-events__list"></ul>';
 }
 
-export default class AddFormView {
+export default class RoutePointsListView {
   getTemplate() {
-    return createAddFormTemplate();
+    return createEventsListTemplate();
   }
 
   getElement() {
