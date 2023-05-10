@@ -9,3 +9,4 @@ export const ICONS = {
   'Sightseeing': 'img/icons/sightseeing.png',
   'Restaurant': 'img/icons/restaurant.png'
 };
+export const CURRENT_URL = window.location.href;

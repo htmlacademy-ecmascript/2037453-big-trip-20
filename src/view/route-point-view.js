@@ -1,5 +1,5 @@
-import {createElement} from '../render';
-import {ICONS} from '../utils/icons';
+import AbstractView from '../framework/view/abstract-view';
+import {ICONS} from '../helpers/const';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -75,25 +75,15 @@ function createRoutePointTemplate(routePoint) {
               </div>
           </li>`;
 }
-export default class RoutePointView {
+export default class RoutePointView extends AbstractView {
   #data = null;
   constructor({routePoint, offersList}) {
+    super();
     const routePointOffers = offersList.offers.filter((el) => routePoint.offers.includes(el.id));
     this.#data = {...routePoint, offers: routePointOffers};
   }
 
-  getTemplate() {
+  get template() {
     return createRoutePointTemplate(this.#data);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

@@ -1,5 +1,5 @@
-import {createElement} from '../render';
-import {ICONS} from '../utils/icons';
+import AbstractView from '../framework/view/abstract-view';
+import {ICONS} from '../helpers/const';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -98,28 +98,18 @@ function createEditFormTemplate(routePoint, offers, destinations) {
             </form>
           </li>`;
 }
-export default class EditFormView {
+export default class EditFormView extends AbstractView {
   #routePoint = null;
   #offers = null;
   #destinations = null;
   constructor({routePoint, offersList, destination}) {
+    super();
     this.#routePoint = {...routePoint};
     this.#offers = offersList;
     this.#destinations = destination;
   }
 
-  getTemplate() {
+  get template() {
     return createEditFormTemplate(this.#routePoint, this.#offers, this.#destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

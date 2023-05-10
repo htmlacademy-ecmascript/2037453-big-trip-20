@@ -1,13 +1,17 @@
-import {render} from '../render.js';
+import {render} from '../framework/render';
 import FilterView from '../view/filters-view';
 import SortView from '../view/sort-view';
 import RoutePointsListView from '../view/route-points-list-view';
 import RoutePointView from '../view/route-point-view';
 import EditFormView from '../view/edit-form-view';
 import RoutePointsModel from '../models/route-points-model';
+import OffersModel from '../models/offers-model';
+import DestinationsModel from '../models/destinations-model';
 
 export default class ContentPresenter {
   #routePointsModel = new RoutePointsModel();
+  #offersModel = new OffersModel();
+  #destinationsModel = new DestinationsModel();
   #filterComponent = new FilterView();
   #sortComponent = new SortView();
   #routeListComponent = new RoutePointsListView();
@@ -25,9 +29,9 @@ export default class ContentPresenter {
   }
 
   async init() {
-    this.#routePointsData = await this.#routePointsModel.getRoutePoints();
-    this.#offersData = await this.#routePointsModel.getOffers();
-    this.#destinationsData = await this.#routePointsModel.getDestinations();
+    this.#routePointsData = await this.#routePointsModel.routePoints;
+    this.#offersData = await this.#offersModel.offers;
+    this.#destinationsData = await this.#destinationsModel.destinations;
     this.#renderContent();
   }
 
@@ -40,7 +44,7 @@ export default class ContentPresenter {
       offersList: this.#offersData,
       destination: this.#destinationsData
     });
-    render(this.#editFormComponent, this.#routeListComponent.getElement());
+    render(this.#editFormComponent, this.#routeListComponent.element);
     this.#editFormComponent.removeElement();
     for (let i = 1; i < this.#routePointsData.length; i++) {
       const routePoint = this.#routePointsData[i];
@@ -49,7 +53,7 @@ export default class ContentPresenter {
         offersList: this.#offersData.find((el) => el.type === routePoint.type),
         destination: this.#destinationsData.find((el) => el.id === routePoint.destination)
       });
-      render(this.#routePointerComponent, this.#routeListComponent.getElement());
+      render(this.#routePointerComponent, this.#routeListComponent.element);
       this.#routePointerComponent.removeElement();
     }
   }
