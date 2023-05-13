@@ -80,9 +80,7 @@ export default class ContentPresenter {
     render(this.#routeListComponent, this.#contentContainer);
 
     for (let i = 0; i < this.#routePointsData.length; i++) {
-      const routePoint = this.#routePointsData[i];
-
-      this.#renderRoutePoint(routePoint);
+      this.#renderRoutePoint(this.#routePointsData[i]);
     }
   }
 }
