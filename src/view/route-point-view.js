@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import {ICONS} from '../helpers/const';
-import {routeDateFormat, dateFormat, timeFormat, dateTimeFormat, durationFormat, totalPrice} from '../helpers/utils';
+import {routeDateFormat, dateFormat, timeFormat, durationFormat, dateISOFormat, totalPrice} from '../helpers/utils';
 
 function createOfferTemplate({title, price}) {
   return `<li class="event__offer">
@@ -21,9 +21,9 @@ function createRoutePointTemplate({dateStart, dateStop, type, offers, isFavorite
                 <h3 class="event__title">${type}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="${dateTimeFormat(dateStart)}">${timeFormat(dateStart)}</time>
+                    <time class="event__start-time" datetime="${dateISOFormat(dateStart)}">${timeFormat(dateStart)}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="${dateTimeFormat(dateStop)}">${timeFormat(dateStop)}</time>
+                    <time class="event__end-time" datetime="${dateISOFormat(dateStop)}">${timeFormat(dateStop)}</time>
                   </p>
                   <p class="event__duration">${durationFormat(dateStart, dateStop)}</p>
                 </div>
@@ -47,14 +47,24 @@ function createRoutePointTemplate({dateStart, dateStop, type, offers, isFavorite
 
 export default class RoutePointView extends AbstractView {
   #data = {};
+  #handleEditClick = null;
 
-  constructor({routePoint, offersList}) {
+  constructor({routePoint, offersList, onEditClick}) {
     super();
     const routePointOffers = offersList.offers.filter((el) => routePoint.offers.includes(el.id));
     this.#data = {...routePoint, offers: routePointOffers};
+    this.#handleEditClick = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
   get template() {
     return createRoutePointTemplate(this.#data);
   }
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }

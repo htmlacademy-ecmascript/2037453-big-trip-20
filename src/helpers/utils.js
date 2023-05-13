@@ -3,7 +3,8 @@ import dayjs from 'dayjs';
 const routeDateFormat = (date) => dayjs(date).format('DD MMM');
 const dateFormat = (date) => dayjs(date).format('YYYY-MM-DD');
 const timeFormat = (date) => dayjs(date).format('HH:mm');
-const dateTimeFormat = (date) => dayjs(date).format('YYYY-MM-DD[T]HH:mm');
+const dateISOFormat = (date) => dayjs(date).toISOString();
+const dateTimeFormat = (date) => dayjs(date).format('YYYY/MM/DD HH:mm');
 const durationFormat = (start, stop) => {
   const gap = dayjs(stop).diff(dayjs(start));
   let gapFormat = 'mm[m]';
@@ -17,4 +18,4 @@ const durationFormat = (start, stop) => {
 };
 const totalPrice = (offers) => offers.reduce((acc, {price}) => acc + price, 0);
 
-export {routeDateFormat, dateFormat, timeFormat, dateTimeFormat, durationFormat, totalPrice};
+export {routeDateFormat, dateFormat, timeFormat, dateTimeFormat, durationFormat, dateISOFormat, totalPrice};
