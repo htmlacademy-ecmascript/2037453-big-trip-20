@@ -7,12 +7,15 @@ import EditFormView from '../view/edit-form-view';
 import RoutePointsModel from '../models/route-points-model';
 import OffersModel from '../models/offers-model';
 import DestinationsModel from '../models/destinations-model';
+import StubView from '../view/stub-view';
 
 export default class ContentPresenter {
+  #activeFilter = null;
   #routePointsModel = new RoutePointsModel();
   #offersModel = new OffersModel();
   #destinationsModel = new DestinationsModel();
   #filterComponent = null;
+  #stubComponent = null;
   #sortComponent = new SortView();
   #routeListComponent = new RoutePointsListView();
   #filterContainer = null;
@@ -24,6 +27,8 @@ export default class ContentPresenter {
   constructor({filterContainer, contentContainer}) {
     this.#filterContainer = filterContainer;
     this.#contentContainer = contentContainer;
+    this.#activeFilter = 'Everything';
+    this.#stubComponent = new StubView(this.#activeFilter);
   }
 
   async init() {
@@ -77,11 +82,15 @@ export default class ContentPresenter {
   #renderContent() {
     this.#filterComponent = new FilterView(this.#routePointsData);
     render(this.#filterComponent, this.#filterContainer);
-    render(this.#sortComponent, this.#contentContainer);
-    render(this.#routeListComponent, this.#contentContainer);
+    if(this.#routePointsData.length <= 0) {
+      render(this.#stubComponent, this.#contentContainer);
+    }else {
+      render(this.#sortComponent, this.#contentContainer);
+      render(this.#routeListComponent, this.#contentContainer);
 
-    for (let i = 0; i < this.#routePointsData.length; i++) {
-      this.#renderRoutePoint(this.#routePointsData[i]);
+      for (let i = 0; i < this.#routePointsData.length; i++) {
+        this.#renderRoutePoint(this.#routePointsData[i]);
+      }
     }
   }
 }

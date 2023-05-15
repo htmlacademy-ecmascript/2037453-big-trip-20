@@ -11,6 +11,13 @@ export const ICONS = {
   'Restaurant': 'img/icons/restaurant.png'
 };
 
+export const STUBS = {
+  Everything: 'Click New Event to create your first point',
+  Future: 'There are no past events now',
+  Present: 'There are no present events now',
+  Past: 'There are no future events now',
+};
+
 export const FILTERS = {
   Everything: (point) => point,
   Future: (point) => point.filter(({dateStart}) => new Date(dateStart) > now),
