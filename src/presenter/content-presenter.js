@@ -12,7 +12,7 @@ export default class ContentPresenter {
   #routePointsModel = new RoutePointsModel();
   #offersModel = new OffersModel();
   #destinationsModel = new DestinationsModel();
-  #filterComponent = new FilterView();
+  #filterComponent = null;
   #sortComponent = new SortView();
   #routeListComponent = new RoutePointsListView();
   #filterContainer = null;
@@ -75,6 +75,7 @@ export default class ContentPresenter {
   }
 
   #renderContent() {
+    this.#filterComponent = new FilterView(this.#routePointsData);
     render(this.#filterComponent, this.#filterContainer);
     render(this.#sortComponent, this.#contentContainer);
     render(this.#routeListComponent, this.#contentContainer);
