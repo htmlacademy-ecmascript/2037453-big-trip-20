@@ -38,12 +38,11 @@ export default class ContentPresenter {
   }
 
   #renderRoutePoint(routePoint) {
-    const offersList = this.#offersData.find((el) => el.type === routePoint.type);
     const routePointPresenter = new RoutePointPresenter({
       routeListContainer: this.#routeListComponent.element
     });
 
-    routePointPresenter.init(routePoint, offersList, this.#offersData, this.#destinationsData);
+    routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
   }
 
   #renderContent() {

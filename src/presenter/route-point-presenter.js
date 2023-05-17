@@ -12,7 +12,8 @@ export default class RoutePointPresenter {
     this.#routeListContainer = routeListContainer;
   }
 
-  init(routePoint, offersList, offers, destinations) {
+  init(routePoint, offers, destinations) {
+    const offersList = offers.find((el) => el.type === routePoint.type);
     this.#routePoint = routePoint;
     this.#routePointComponent = new RoutePointView({
       routePoint,
