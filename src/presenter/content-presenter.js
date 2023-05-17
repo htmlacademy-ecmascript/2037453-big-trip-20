@@ -22,6 +22,7 @@ export default class ContentPresenter {
   #routePointsData = null;
   #offersData = null;
   #destinationsData = null;
+  #routePointersList = new Map();
 
   constructor({filterContainer, contentContainer}) {
     this.#filterContainer = filterContainer;
@@ -39,10 +40,12 @@ export default class ContentPresenter {
 
   #renderRoutePoint(routePoint) {
     const routePointPresenter = new RoutePointPresenter({
-      routeListContainer: this.#routeListComponent.element
+      routeListContainer: this.#routeListComponent.element,
+      onDataChange: this.#handleRoutePointChange
     });
 
     routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
+    this.#routePointersList.set(routePoint.id, routePointPresenter);
   }
 
   #renderContent() {
@@ -59,4 +62,8 @@ export default class ContentPresenter {
       }
     }
   }
+
+  #handleRoutePointChange = (updateRoutePoint) => {
+    this.#routePointersList.get(updateRoutePoint.id).init(updateRoutePoint, this.#offersData, this.#destinationsData);
+  };
 }
