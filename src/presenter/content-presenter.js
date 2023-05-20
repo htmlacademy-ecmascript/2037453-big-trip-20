@@ -1,13 +1,12 @@
-import {render, replace} from '../framework/render';
+import {render} from '../framework/render';
 import FilterView from '../view/filters-view';
 import SortView from '../view/sort-view';
 import RoutePointsListView from '../view/route-points-list-view';
-import RoutePointView from '../view/route-point-view';
-import EditFormView from '../view/edit-form-view';
 import RoutePointsModel from '../models/route-points-model';
 import OffersModel from '../models/offers-model';
 import DestinationsModel from '../models/destinations-model';
 import StubView from '../view/stub-view';
+import RoutePointPresenter from '../presenter/route-point-presenter';
 
 export default class ContentPresenter {
   #activeFilter = null;
@@ -23,6 +22,8 @@ export default class ContentPresenter {
   #routePointsData = null;
   #offersData = null;
   #destinationsData = null;
+  #routePointersList = new Map();
+  #selectedRoutePointId = null;
 
   constructor({filterContainer, contentContainer}) {
     this.#filterContainer = filterContainer;
@@ -39,52 +40,22 @@ export default class ContentPresenter {
   }
 
   #renderRoutePoint(routePoint) {
-    const offersList = this.#offersData.find((el) => el.type === routePoint.type);
-    const escPressHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escPressHandler);
-      }
-    };
-    const routePointComponent = new RoutePointView({
-      routePoint,
-      offersList,
-      onEditClick: () => {
-        replacePointToForm();
-        document.addEventListener('keydown', escPressHandler);
-      }
-    });
-    const editFormComponent = new EditFormView({
-      routePoint,
-      offers: this.#offersData,
-      destinations: this.#destinationsData,
-      onFormSubmit: () => {
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escPressHandler);
-      },
-      onCloseClick: () => {
-        replaceFormToPoint();
-      }
+    const routePointPresenter = new RoutePointPresenter({
+      routeListContainer: this.#routeListComponent.element,
+      onDataChange: this.#handleRoutePointChange,
+      onRoutePointSelect: this.#handleRoutePointSelect
     });
 
-    function replacePointToForm() {
-      replace(editFormComponent, routePointComponent);
-    }
-
-    function replaceFormToPoint() {
-      replace(routePointComponent, editFormComponent);
-    }
-
-    render(routePointComponent, this.#routeListComponent.element);
+    routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
+    this.#routePointersList.set(routePoint.id, routePointPresenter);
   }
 
   #renderContent() {
     this.#filterComponent = new FilterView(this.#routePointsData);
     render(this.#filterComponent, this.#filterContainer);
-    if(this.#routePointsData.length <= 0) {
+    if (this.#routePointsData.length <= 0) {
       render(this.#stubComponent, this.#contentContainer);
-    }else {
+    } else {
       render(this.#sortComponent, this.#contentContainer);
       render(this.#routeListComponent, this.#contentContainer);
 
@@ -93,4 +64,21 @@ export default class ContentPresenter {
       }
     }
   }
+
+  #handleRoutePointChange = (updateRoutePoint) => {
+    this.#routePointersList.get(updateRoutePoint.id).init(updateRoutePoint, this.#offersData, this.#destinationsData);
+  };
+
+  #handleRoutePointSelect = (id) => {
+    if(this.#selectedRoutePointId === id) {
+      this.#selectedRoutePointId = null;
+      return;
+    }
+
+    if(this.#selectedRoutePointId !== null) {
+      this.#routePointersList.get(this.#selectedRoutePointId).unSelect();
+    }
+
+    this.#selectedRoutePointId = id;
+  };
 }

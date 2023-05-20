@@ -48,15 +48,20 @@ function createRoutePointTemplate({dateStart, dateStop, type, offers, isFavorite
 export default class RoutePointView extends AbstractView {
   #data = {};
   #handleEditClick = null;
+  #handleFavoriteClick = null;
 
-  constructor({routePoint, offersList, onEditClick}) {
+  constructor({routePoint, offersList, onEditClick, onFavoriteClick}) {
     super();
     const routePointOffers = offersList.offers.filter((el) => routePoint.offers.includes(el.id));
     this.#data = {...routePoint, offers: routePointOffers};
     this.#handleEditClick = onEditClick;
+    this.#handleFavoriteClick = onFavoriteClick;
 
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#editClickHandler);
+
+    this.element.querySelector('.event__favorite-btn')
+      .addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
@@ -66,5 +71,10 @@ export default class RoutePointView extends AbstractView {
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
   };
 }
