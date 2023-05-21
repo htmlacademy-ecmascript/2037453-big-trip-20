@@ -1,91 +1,13 @@
 [
   {
-    "id": 6,
-    "dateStart": "2023-05-17T11:44:00.000Z",
-    "dateStop": "2023-05-19T01:58:00.000Z",
-    "type": "Flight",
-    "offers": [
-      1,
-      2
-    ],
-    "destination": 5,
-    "isFavorite": true
-  },
-  {
-    "id": 1,
-    "dateStart": "2023-04-30T09:41:00.000Z",
-    "dateStop": "2023-05-02T15:39:00.000Z",
-    "type": "Sightseeing",
-    "offers": [
-      1
-    ],
-    "destination": 5,
-    "isFavorite": false
-  },
-  {
-    "id": 2,
-    "dateStart": "2023-05-05T00:45:00.000Z",
-    "dateStop": "2023-05-05T19:39:00.000Z",
-    "type": "Check-In",
-    "offers": [
-      1
-    ],
-    "destination": 7,
-    "isFavorite": true
-  },
-  {
-    "id": 3,
-    "dateStart": "2023-05-07T16:08:00.000Z",
-    "dateStop": "2023-05-09T05:37:00.000Z",
-    "type": "Sightseeing",
-    "offers": [
-      1
-    ],
-    "destination": 5,
-    "isFavorite": true
-  },
-  {
-    "id": 4,
-    "dateStart": "2023-05-09T22:37:00.000Z",
-    "dateStop": "2023-05-11T10:34:00.000Z",
+    "id": 10,
+    "dateStart": "2023-05-29T00:22:00.000Z",
+    "dateStop": "2023-05-30T18:54:00.000Z",
     "type": "Restaurant",
     "offers": [
       1
     ],
-    "destination": 10,
-    "isFavorite": false
-  },
-  {
-    "id": 5,
-    "dateStart": "2023-05-11T16:40:00.000Z",
-    "dateStop": "2023-05-14T15:29:00.000Z",
-    "type": "Check-In",
-    "offers": [
-      1
-    ],
-    "destination": 4,
-    "isFavorite": false
-  },
-  {
-    "id": 7,
-    "dateStart": "2023-05-21T19:53:00.000Z",
-    "dateStop": "2023-05-22T03:42:00.000Z",
-    "type": "Taxi",
-    "offers": [
-      1
-    ],
-    "destination": 2,
-    "isFavorite": true
-  },
-  {
-    "id": 8,
-    "dateStart": "2023-05-22T21:41:00.000Z",
-    "dateStop": "2023-05-24T00:07:00.000Z",
-    "type": "Drive",
-    "offers": [
-      1
-    ],
-    "destination": 2,
+    "destination": 6,
     "isFavorite": false
   },
   {
@@ -100,14 +22,92 @@
     "isFavorite": true
   },
   {
-    "id": 10,
-    "dateStart": "2023-05-29T00:22:00.000Z",
-    "dateStop": "2023-05-30T18:54:00.000Z",
+    "id": 8,
+    "dateStart": "2023-05-22T21:41:00.000Z",
+    "dateStop": "2023-05-24T00:07:00.000Z",
+    "type": "Drive",
+    "offers": [
+      1
+    ],
+    "destination": 2,
+    "isFavorite": false
+  },
+  {
+    "id": 7,
+    "dateStart": "2023-05-21T19:53:00.000Z",
+    "dateStop": "2023-05-22T03:42:00.000Z",
+    "type": "Taxi",
+    "offers": [
+      1
+    ],
+    "destination": 2,
+    "isFavorite": true
+  },
+  {
+    "id": 5,
+    "dateStart": "2023-05-11T16:40:00.000Z",
+    "dateStop": "2023-05-14T15:29:00.000Z",
+    "type": "Check-In",
+    "offers": [
+      1
+    ],
+    "destination": 4,
+    "isFavorite": false
+  },
+  {
+    "id": 4,
+    "dateStart": "2023-05-09T22:37:00.000Z",
+    "dateStop": "2023-05-11T10:34:00.000Z",
     "type": "Restaurant",
     "offers": [
       1
     ],
-    "destination": 6,
+    "destination": 10,
     "isFavorite": false
+  },
+  {
+    "id": 3,
+    "dateStart": "2023-05-07T16:08:00.000Z",
+    "dateStop": "2023-05-09T05:37:00.000Z",
+    "type": "Sightseeing",
+    "offers": [
+      1
+    ],
+    "destination": 5,
+    "isFavorite": true
+  },
+  {
+    "id": 2,
+    "dateStart": "2023-05-05T00:45:00.000Z",
+    "dateStop": "2023-05-05T19:39:00.000Z",
+    "type": "Check-In",
+    "offers": [
+      1
+    ],
+    "destination": 7,
+    "isFavorite": true
+  },
+  {
+    "id": 1,
+    "dateStart": "2023-04-30T09:41:00.000Z",
+    "dateStop": "2023-05-02T15:39:00.000Z",
+    "type": "Sightseeing",
+    "offers": [
+      1
+    ],
+    "destination": 5,
+    "isFavorite": false
+  },
+  {
+    "id": 6,
+    "dateStart": "2023-05-17T11:44:00.000Z",
+    "dateStop": "2023-05-19T01:58:00.000Z",
+    "type": "Flight",
+    "offers": [
+      1,
+      2
+    ],
+    "destination": 5,
+    "isFavorite": true
   }
 ]
