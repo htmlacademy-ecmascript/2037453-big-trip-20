@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import {totalPrice} from './utils';
+
 const now = new Date();
 export const ICONS = {
   'Taxi': 'img/icons/taxi.png',
@@ -23,6 +26,29 @@ export const FILTERS = {
   Future: (point) => point.filter(({dateStart}) => new Date(dateStart) > now),
   Present: (point) => point.filter(({dateStart, dateStop}) => new Date(dateStart) <= now && new Date(dateStop) >= now),
   Past: (point) => point.filter(({dateStop}) => new Date(dateStop) < now),
+};
+
+export const SORTS = {
+  Day: ({routePoints}) => routePoints,
+  Event: false,
+  Time: ({routePoints}) => routePoints.sort((prev, next) => {
+    const _getMilliseconds = (date) => dayjs(date).valueOf();
+    const prevTime = _getMilliseconds(prev.dateStart);
+    const nextTime = _getMilliseconds(next.dateStart);
+    return prevTime - nextTime;
+  }),
+  Price: ({routePoints, offers}) => routePoints.sort((prev, next) => {
+    const _getOffers = (allOffers, routePoint) => {
+      const filteredOffers = allOffers.find((offer) => offer.type === routePoint.type).offers;
+      return filteredOffers.filter(({id}) => routePoint.offers.includes(id));
+    };
+    const prevOffers = _getOffers(offers, prev).filter(({id}) => prev.offers.includes(id));
+    const nextOffers = _getOffers(offers, next).filter(({id}) => next.offers.includes(id));
+    const prevPrice = totalPrice(prevOffers);
+    const nextPrice = totalPrice(nextOffers);
+    return prevPrice - nextPrice;
+  }),
+  Offers: false
 };
 
 export const CURRENT_URL = window.location.href;

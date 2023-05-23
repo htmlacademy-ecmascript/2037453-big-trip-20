@@ -35,7 +35,7 @@ export default class RoutePointPresenter {
       onCloseClick: this.#handlerCloseClick,
     });
 
-    if ((prevRoutePointComponent, prevEditFormComponent) === null) {
+    if (prevRoutePointComponent === null) {
       render(this.#routePointComponent, this.#routeListContainer);
       return;
     }
