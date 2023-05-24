@@ -16,6 +16,6 @@ const durationFormat = (start, stop) => {
   }
   return dayjs(gap).format(gapFormat);
 };
-const totalPrice = (offers) => offers.reduce((acc, {price}) => acc + price, 0);
+const totalPrice = (offers, base = 0) => offers.reduce((acc, {price}) => acc + price, base);
 
 export {routeDateFormat, dateFormat, timeFormat, dateTimeFormat, durationFormat, dateISOFormat, totalPrice};

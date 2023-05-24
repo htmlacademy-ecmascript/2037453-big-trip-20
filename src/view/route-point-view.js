@@ -10,7 +10,7 @@ function createOfferTemplate({title, price}) {
           </li>`;
 }
 
-function createRoutePointTemplate({dateStart, dateStop, type, offers, isFavorite}) {
+function createRoutePointTemplate({dateStart, dateStop, type, offers, isFavorite, price}) {
   const offersListMarkup = offers.map((el) => createOfferTemplate(el));
   return `<li class="trip-events__item">
             <div class="event">
@@ -28,7 +28,7 @@ function createRoutePointTemplate({dateStart, dateStop, type, offers, isFavorite
                   <p class="event__duration">${durationFormat(dateStart, dateStop)}</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">${totalPrice(offers)}</span>
+                  &euro;&nbsp;<span class="event__price-value">${totalPrice(offers, price)}</span>
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">${offersListMarkup.join('')}</ul>

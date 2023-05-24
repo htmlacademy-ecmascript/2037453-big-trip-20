@@ -7,6 +7,7 @@
     "offers": [
       1
     ],
+    "price": 543,
     "destination": 6,
     "isFavorite": false
   },
@@ -18,6 +19,7 @@
     "offers": [
       1
     ],
+    "price": 34,
     "destination": 8,
     "isFavorite": true
   },
@@ -29,6 +31,7 @@
     "offers": [
       1
     ],
+    "price": 1654,
     "destination": 2,
     "isFavorite": false
   },
@@ -40,6 +43,7 @@
     "offers": [
       1
     ],
+    "price": 4976,
     "destination": 2,
     "isFavorite": true
   },
@@ -51,6 +55,7 @@
     "offers": [
       1
     ],
+    "price": 12,
     "destination": 4,
     "isFavorite": false
   },
@@ -62,6 +67,7 @@
     "offers": [
       1
     ],
+    "price": 634,
     "destination": 10,
     "isFavorite": false
   },
@@ -73,6 +79,7 @@
     "offers": [
       1
     ],
+    "price": 234,
     "destination": 5,
     "isFavorite": true
   },
@@ -84,6 +91,7 @@
     "offers": [
       1
     ],
+    "price": 7689,
     "destination": 7,
     "isFavorite": true
   },
@@ -95,6 +103,7 @@
     "offers": [
       1
     ],
+    "price": 235,
     "destination": 5,
     "isFavorite": false
   },
@@ -107,6 +116,7 @@
       1,
       2
     ],
+    "price": 54,
     "destination": 5,
     "isFavorite": true
   }

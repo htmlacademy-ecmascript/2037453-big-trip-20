@@ -25,10 +25,9 @@ function createTypeTemplate({type, routePoint}) {
 }
 
 function createEditFormTemplate(routePoint, allOffers, allDestinations) {
-  const {id, dateStart, dateStop, type, destination} = routePoint;
+  const {id, dateStart, dateStop, type, destination, price} = routePoint;
   const {offers} = allOffers.find((el) => el.type === type);
   const {name, description, photos} = allDestinations.find((el) => el.id === destination);
-  const eventTotalPrice = offers.reduce((acc, {price}) => acc + price, 0);
   const typesListMarkup = allOffers.map((el) => createTypeTemplate({...el, routePoint}));
   const eventOffersListMarkup = offers.map((el) => createOfferTemplate({...el, routePoint}));
   const eventPhotosListMarkup = photos.map((el) => (`<img class="event__photo" src="${el}" alt="Event photo">`));
@@ -70,7 +69,7 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
                     <span class="visually-hidden">Price</span>
                     &euro;
                   </label>
-                  <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${eventTotalPrice}">
+                  <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
                 </div>
                 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                 <button class="event__reset-btn" type="reset">Delete</button>
