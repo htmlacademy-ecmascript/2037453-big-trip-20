@@ -54,7 +54,15 @@ export default class ContentPresenter {
     }
   }
 
+  #removeEscPressEvent() {
+    if (this.#selectedRoutePointId === null) {
+      return;
+    }
+    this.#routePointersList.get(this.#selectedRoutePointId).unSelect();
+  }
+
   #clearRoutePoints() {
+    this.#removeEscPressEvent();
     this.#routeListComponent.element.innerHTML = '';
   }
 
@@ -77,25 +85,23 @@ export default class ContentPresenter {
   };
 
   #handleRoutePointSelect = (id) => {
-    if(this.#selectedRoutePointId === id) {
+    if (this.#selectedRoutePointId === id) {
       this.#selectedRoutePointId = null;
       return;
     }
 
-    if(this.#selectedRoutePointId !== null) {
-      this.#routePointersList.get(this.#selectedRoutePointId).unSelect();
-    }
+    this.#removeEscPressEvent();
 
     this.#selectedRoutePointId = id;
   };
 
   #handleSortChange = (sortType) => {
-    if(sortType === this.#activeSortType) {
+    if (sortType === this.#activeSortType) {
       return;
     }
     this.#clearRoutePoints();
     const data = {routePoints: [...this.#routePointsData]};
-    if(sortType === 'Price') {
+    if (sortType === 'Price') {
       data['offers'] = this.#offersData;
     }
     const sortRoutePoints = SORTS[sortType](data);
