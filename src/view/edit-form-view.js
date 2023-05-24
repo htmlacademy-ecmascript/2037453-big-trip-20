@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import {ICONS} from '../helpers/const';
 import {dateTimeFormat} from '../helpers/utils';
 
@@ -97,7 +97,7 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
           </li>`;
 }
 
-export default class EditFormView extends AbstractView {
+export default class EditFormView extends AbstractStatefulView {
   #routePoint = null;
   #offers = null;
   #destinations = null;
@@ -121,6 +121,10 @@ export default class EditFormView extends AbstractView {
 
   get template() {
     return createEditFormTemplate(this.#routePoint, this.#offers, this.#destinations);
+  }
+
+  _restoreHandlers() {
+    super._restoreHandlers();
   }
 
   #formSubmitHandler = (evt) => {
