@@ -58,7 +58,7 @@ export default class ContentPresenter {
     if (this.#selectedRoutePointId === null) {
       return;
     }
-    this.#routePointersList.get(this.#selectedRoutePointId).unSelect();
+    this.#routePointersList.get(this.#selectedRoutePointId).reset();
   }
 
   #clearRoutePoints() {

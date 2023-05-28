@@ -17,5 +17,22 @@ const durationFormat = (start, stop) => {
   return dayjs(gap).format(gapFormat);
 };
 const totalPrice = (offers, base = 0) => offers.reduce((acc, {price}) => acc + price, base);
+const getOffersByType = (offersList, offerType) => {
+  const {offers} = offersList.find((el) => el.type === offerType);
+  return offers;
+};
+const getDestinationById = (destinationsList, destinationId) => destinationsList.find((el) => el.id === destinationId);
+const getDestinationByName = (destinationsList, destinationName) => destinationsList.find((el) => el.name === destinationName);
 
-export {routeDateFormat, dateFormat, timeFormat, dateTimeFormat, durationFormat, dateISOFormat, totalPrice};
+export {
+  routeDateFormat,
+  dateFormat,
+  timeFormat,
+  dateTimeFormat,
+  durationFormat,
+  dateISOFormat,
+  totalPrice,
+  getOffersByType,
+  getDestinationById,
+  getDestinationByName
+};

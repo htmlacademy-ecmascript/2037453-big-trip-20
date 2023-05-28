@@ -52,8 +52,8 @@ export default class RoutePointPresenter {
     remove(prevEditFormComponent);
   }
 
-  unSelect() {
-    this.#handlerCloseClick();
+  reset() {
+    this.#replaceFormToPoint();
   }
 
   #replacePointToForm() {
@@ -63,6 +63,7 @@ export default class RoutePointPresenter {
   }
 
   #replaceFormToPoint() {
+    this.#editFormComponent.reset(this.#routePoint);
     replace(this.#routePointComponent, this.#editFormComponent);
     document.removeEventListener('keydown', this.#escPressHandler);
     this.#handleRoutePointSelect(this.#routePoint.id);
@@ -79,7 +80,8 @@ export default class RoutePointPresenter {
     this.#replacePointToForm();
   };
 
-  #handleFormSubmit = () => {
+  #handleFormSubmit = (routePoint) => {
+    this.#handleDataChange(routePoint);
     this.#replaceFormToPoint();
   };
 
