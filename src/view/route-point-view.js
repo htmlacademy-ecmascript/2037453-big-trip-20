@@ -52,7 +52,7 @@ export default class RoutePointView extends AbstractView {
 
   constructor({routePoint, offersList = [], onEditClick, onFavoriteClick}) {
     super();
-    const routePointOffers = offersList.offers.filter((el) => routePoint.offers.includes(el.id));
+    const routePointOffers = offersList.filter((el) => routePoint.offers.includes(el.id));
     this.#data = {...routePoint, offers: routePointOffers};
     this.#handleEditClick = onEditClick;
     this.#handleFavoriteClick = onFavoriteClick;
