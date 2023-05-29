@@ -24,9 +24,9 @@ function createTypeTemplate({type, routePoint}) {
           </div>`;
 }
 
-function createEditFormTemplate(routePoint, allOffers, allDestinations) {
-  const {id, dateStart, dateStop, type, destination, price} = routePoint;
-  const {name, description, photos} = getDestinationById(allDestinations, destination);
+function createEditFormTemplate(routePoint = {}, allOffers, allDestinations) {
+  const {id = 0, dateStart = new Date(), dateStop = new Date(), type, destination = 0, price = 0} = routePoint;
+  const {name = '', description = '', photos = []} = getDestinationById(allDestinations, destination);
   const offers = getOffersByType(allOffers, type);
 
   const typesListMarkup = allOffers.map((el) => createTypeTemplate({...el, routePoint}));

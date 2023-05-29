@@ -41,17 +41,44 @@ export default class ContentPresenter {
     this.#renderContent();
   }
 
-  #renderRoutePoints(data) {
-    for (let i = 0; i < data.length; i++) {
-      const routePointPresenter = new RoutePointPresenter({
-        routeListContainer: this.#routeListComponent.element,
-        onDataChange: this.#handleRoutePointChange,
-        onRoutePointSelect: this.#handleRoutePointSelect
-      });
+  #renderContent() {
+    this.#filterComponent = new FilterView(this.#routePointsData);
+    render(this.#filterComponent, this.#filterContainer);
+    if (this.#routePointsData.length <= 0) {
+      render(this.#stubComponent, this.#contentContainer);
+    } else {
+      this.#sortComponent = new SortView(this.#handleSortChange);
+      render(this.#sortComponent, this.#contentContainer);
+      render(this.#routeListComponent, this.#contentContainer);
 
-      routePointPresenter.init(data[i], this.#offersData, this.#destinationsData);
-      this.#routePointersList.set(data[i].id, routePointPresenter);
+      const defaultType = Object.values(this.#offersData)[0].type;
+      this.#renderRoutePoint({
+        id: 0,
+        dateStart: new Date(),
+        dateStop: new Date(),
+        destination: 0,
+        isFavorite: false,
+        offers: [],
+        price: 0,
+        type: defaultType,
+      });
+      this.#renderRoutePoints(this.#routePointsData);
     }
+  }
+
+  #renderRoutePoints(routePointData) {
+    routePointData.forEach((routePoint) => this.#renderRoutePoint(routePoint));
+  }
+
+  #renderRoutePoint(routePoint) {
+    const routePointPresenter = new RoutePointPresenter({
+      routeListContainer: this.#routeListComponent.element,
+      onDataChange: this.#handleRoutePointChange,
+      onRoutePointSelect: this.#handleRoutePointSelect
+    });
+
+    routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
+    this.#routePointersList.set(routePoint.id, routePointPresenter);
   }
 
   #removeEscPressEvent() {
@@ -64,20 +91,6 @@ export default class ContentPresenter {
   #clearRoutePoints() {
     this.#removeEscPressEvent();
     this.#routeListComponent.element.innerHTML = '';
-  }
-
-  #renderContent() {
-    this.#filterComponent = new FilterView(this.#routePointsData);
-    render(this.#filterComponent, this.#filterContainer);
-    if (this.#routePointsData.length <= 0) {
-      render(this.#stubComponent, this.#contentContainer);
-    } else {
-      this.#sortComponent = new SortView(this.#handleSortChange);
-      render(this.#sortComponent, this.#contentContainer);
-      render(this.#routeListComponent, this.#contentContainer);
-
-      this.#renderRoutePoints(this.#routePointsData);
-    }
   }
 
   #handleRoutePointChange = (updateRoutePoint) => {
