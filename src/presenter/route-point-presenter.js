@@ -1,10 +1,12 @@
 import {render, replace, remove} from '../framework/render';
 import RoutePointView from '../view/route-point-view';
 import EditFormView from '../view/edit-form-view';
+import {getOffersByType} from '../helpers/utils';
 
 export default class RoutePointPresenter {
   #routeListContainer = null;
   #routePointComponent = null;
+  #createFormComponent = null;
   #editFormComponent = null;
   #routePoint = null;
   #handleDataChange = null;
@@ -19,14 +21,32 @@ export default class RoutePointPresenter {
   init(routePoint, offers, destinations) {
     const prevRoutePointComponent = this.#routePointComponent;
     const prevEditFormComponent = this.#editFormComponent;
-    const offersList = offers.find((el) => el.type === routePoint.type);
+    const offersList = getOffersByType(offers, routePoint.type);
     this.#routePoint = routePoint;
-    this.#routePointComponent = new RoutePointView({
-      routePoint,
-      offersList,
-      onEditClick: this.#handleEditClick,
-      onFavoriteClick: this.#handleFavoriteClick
-    });
+
+    if (!routePoint.id) {
+      this.#createFormComponent = new EditFormView({
+        routePoint,
+        offers,
+        destinations,
+        onFormSubmit: this.#handleFormSubmit,
+        onCloseClick: this.#handlerCloseClick,
+      });
+      render(this.#createFormComponent, this.#routeListContainer);
+      return;
+    }
+
+    if (prevRoutePointComponent === null) {
+      this.#routePointComponent = new RoutePointView({
+        routePoint,
+        offersList,
+        onEditClick: this.#handleEditClick,
+        onFavoriteClick: this.#handleFavoriteClick
+      });
+      render(this.#routePointComponent, this.#routeListContainer);
+      return;
+    }
+
     this.#editFormComponent = new EditFormView({
       routePoint,
       offers,
@@ -34,11 +54,6 @@ export default class RoutePointPresenter {
       onFormSubmit: this.#handleFormSubmit,
       onCloseClick: this.#handlerCloseClick,
     });
-
-    if (prevRoutePointComponent === null) {
-      render(this.#routePointComponent, this.#routeListContainer);
-      return;
-    }
 
     if (this.#routeListContainer.contains(prevRoutePointComponent.element)) {
       replace(this.#routePointComponent, prevRoutePointComponent);

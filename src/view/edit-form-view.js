@@ -4,7 +4,7 @@ import {dateTimeFormat, getOffersByType, getDestinationById, getDestinationByNam
 
 function createOfferTemplate({id, title, price, routePoint}) {
   const type = routePoint.type.toLowerCase();
-  const isChecked = routePoint.offers.includes(id) ? 'checked' : '';
+  const isChecked = routePoint?.offers.includes(id) ? 'checked' : '';
   return `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}-${routePoint.id}" type="checkbox" name="event-offer-${type}-${id}" value="${id}" ${isChecked}>
             <label class="event__offer-label" for="event-offer-${type}-${id}-${routePoint.id}">
@@ -16,7 +16,7 @@ function createOfferTemplate({id, title, price, routePoint}) {
 }
 
 function createTypeTemplate({type, routePoint}) {
-  const isChecked = routePoint.type === type ? 'checked' : '';
+  const isChecked = routePoint?.type === type ? 'checked' : '';
   const value = type.toLowerCase();
   return `<div class="event__type-item">
             <input id="event-type-${value}-${routePoint.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}>
@@ -25,7 +25,14 @@ function createTypeTemplate({type, routePoint}) {
 }
 
 function createEditFormTemplate(routePoint = {}, allOffers, allDestinations) {
-  const {id = 0, dateStart = new Date(), dateStop = new Date(), type, destination = 0, price = 0} = routePoint;
+  const {
+    id = 0,
+    dateStart = new Date(),
+    dateStop = new Date(),
+    type = Object.values(allOffers)[0].type,
+    destination = 0,
+    price = 0
+  } = routePoint;
   const {name = '', description = '', photos = []} = getDestinationById(allDestinations, destination);
   const offers = getOffersByType(allOffers, type);
 
