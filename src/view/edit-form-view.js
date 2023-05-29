@@ -4,8 +4,7 @@ import {
   dateTimeFormat,
   getOffersByType,
   getDestinationById,
-  getDestinationByName,
-  getFirstType
+  getDestinationByName
 } from '../helpers/utils';
 
 function createDestinationTemplate(allDestinations, destination) {
@@ -55,14 +54,7 @@ function createTypeTemplate({type}, routePoint) {
 }
 
 function createEditFormTemplate(routePoint, allOffers, allDestinations) {
-  const {
-    id = null,
-    dateStart = new Date(),
-    dateStop = new Date(),
-    type = getFirstType(allOffers),
-    destination = null,
-    price = 0
-  } = routePoint;
+  const {id, dateStart, dateStop, type, destination, price} = routePoint;
 
   const offers = getOffersByType(allOffers, type);
   const destinationName = getDestinationById(allDestinations, destination).name || '';
@@ -188,6 +180,8 @@ export default class EditFormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    const res = EditFormView.parseStateToRoutePoint(this._state)
+    console.log(res)
     this.#handleFormSubmit(EditFormView.parseStateToRoutePoint(this._state));
   };
 

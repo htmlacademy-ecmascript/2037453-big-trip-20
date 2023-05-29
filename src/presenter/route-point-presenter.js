@@ -24,7 +24,7 @@ export default class RoutePointPresenter {
     const offersList = getOffersByType(offers, routePoint.type);
     this.#routePoint = routePoint;
 
-    if (!routePoint.id) {
+    if (routePoint.id === null) {
       this.#createFormComponent = new EditFormView({
         routePoint,
         offers,

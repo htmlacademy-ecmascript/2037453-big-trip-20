@@ -8,6 +8,7 @@ import DestinationsModel from '../models/destinations-model';
 import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
 import {SORTS} from '../helpers/const';
+import {getFirstType} from '../helpers/utils';
 
 export default class ContentPresenter {
   #activeFilter = null;
@@ -51,7 +52,15 @@ export default class ContentPresenter {
       render(this.#sortComponent, this.#contentContainer);
       render(this.#routeListComponent, this.#contentContainer);
 
-      this.#renderRoutePoint({});
+      this.#renderRoutePoint({
+        id: null,
+        dateStart: new Date().toISOString(),
+        dateStop: new Date().toISOString(),
+        type: getFirstType(this.#offersData),
+        destination: null,
+        offers: [],
+        price: 0
+      });
       this.#renderRoutePoints(this.#routePointsData);
     }
   }
