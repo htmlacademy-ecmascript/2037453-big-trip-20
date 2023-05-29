@@ -36,17 +36,6 @@ export default class RoutePointPresenter {
       return;
     }
 
-    if (prevRoutePointComponent === null) {
-      this.#routePointComponent = new RoutePointView({
-        routePoint,
-        offersList,
-        onEditClick: this.#handleEditClick,
-        onFavoriteClick: this.#handleFavoriteClick
-      });
-      render(this.#routePointComponent, this.#routeListContainer);
-      return;
-    }
-
     this.#editFormComponent = new EditFormView({
       routePoint,
       offers,
@@ -54,6 +43,19 @@ export default class RoutePointPresenter {
       onFormSubmit: this.#handleFormSubmit,
       onCloseClick: this.#handlerCloseClick,
     });
+
+    this.#routePointComponent = new RoutePointView({
+      routePoint,
+      offersList,
+      destinations,
+      onEditClick: this.#handleEditClick,
+      onFavoriteClick: this.#handleFavoriteClick
+    });
+
+    if (prevRoutePointComponent === null) {
+      render(this.#routePointComponent, this.#routeListContainer);
+      return;
+    }
 
     if (this.#routeListContainer.contains(prevRoutePointComponent.element)) {
       replace(this.#routePointComponent, prevRoutePointComponent);

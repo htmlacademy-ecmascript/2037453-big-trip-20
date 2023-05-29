@@ -51,7 +51,6 @@ export default class ContentPresenter {
       render(this.#sortComponent, this.#contentContainer);
       render(this.#routeListComponent, this.#contentContainer);
 
-      // const defaultType = Object.values(this.#offersData)[0].type;
       this.#renderRoutePoint({});
       this.#renderRoutePoints(this.#routePointsData);
     }

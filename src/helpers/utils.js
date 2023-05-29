@@ -24,6 +24,8 @@ const getOffersByType = (offersList, offerType) => {
 const getDestinationById = (destinationsList, destinationId) => destinationsList.find((destination) => destination.id === destinationId) || {};
 const getDestinationByName = (destinationsList, destinationName) => destinationsList.find((destination) => destination.name === destinationName) || {};
 
+const getFirstType = (offersList) => Object.values(offersList)[0].type;
+
 export {
   routeDateFormat,
   dateFormat,
@@ -34,5 +36,6 @@ export {
   totalPrice,
   getOffersByType,
   getDestinationById,
-  getDestinationByName
+  getDestinationByName,
+  getFirstType
 };
