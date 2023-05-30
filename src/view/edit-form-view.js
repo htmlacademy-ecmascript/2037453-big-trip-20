@@ -1,4 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.css';
 import {ICONS} from '../helpers/const';
 import {
   dateTimeFormat,
@@ -136,6 +138,11 @@ export default class EditFormView extends AbstractStatefulView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
     this.#addListeners();
+
+
+    const myInput = this.element.querySelectorAll('.event__input--time');
+    const fp = flatpickr(myInput, {});
+    console.log(fp);
   }
 
   get template() {
