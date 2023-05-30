@@ -9,6 +9,7 @@ import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
 import {SORTS} from '../helpers/const';
 import {getFirstType} from '../helpers/utils';
+import {logPlugin} from '@babel/preset-env/lib/debug';
 
 export default class ContentPresenter {
   #activeFilter = null;
@@ -75,9 +76,9 @@ export default class ContentPresenter {
       onDataChange: this.#handleRoutePointChange,
       onRoutePointSelect: this.#handleRoutePointSelect
     });
-
     routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
     this.#routePointersList.set(routePoint.id, routePointPresenter);
+    console.log(this.#routePointersList);
   }
 
   #removeEscPressEvent() {
@@ -93,7 +94,13 @@ export default class ContentPresenter {
   }
 
   #handleRoutePointChange = (updateRoutePoint) => {
-    this.#routePointersList.get(updateRoutePoint.id).init(updateRoutePoint, this.#offersData, this.#destinationsData);
+    if (updateRoutePoint.id === null) {
+      // @todo сделать алгоритм получения последнего id и добавления новой точки маршрута
+      updateRoutePoint.id = 999;
+      this.#renderRoutePoint(updateRoutePoint);
+    } else {
+      this.#routePointersList.get(updateRoutePoint.id).init(updateRoutePoint, this.#offersData, this.#destinationsData);
+    }
   };
 
   #handleRoutePointSelect = (id) => {

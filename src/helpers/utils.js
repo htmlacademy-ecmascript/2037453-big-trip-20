@@ -16,13 +16,13 @@ const durationFormat = (start, stop) => {
   }
   return dayjs(gap).format(gapFormat);
 };
-const totalPrice = (offers, base) => offers.reduce((acc, {price}) => acc + price, base);
-const getOffersByType = (offersList, offerType) => {
-  const {offers = []} = offersList.find((offer) => offer.type === offerType) || {};
+const totalPrice = (offers = [], base = 0) => offers.reduce((acc, {price}) => +acc + price, base);
+const getOffersByType = (offersList = [], offerType = '') => {
+  const {offers} = offersList.find((offer) => offer.type === offerType);
   return offers;
 };
-const getDestinationById = (destinationsList, destinationId) => destinationsList.find((destination) => destination.id === destinationId) || {};
-const getDestinationByName = (destinationsList, destinationName) => destinationsList.find((destination) => destination.name === destinationName) || {};
+const getDestinationById = (destinationsList = [], destinationId = 0) => destinationsList.find((destination) => destination.id === destinationId);
+const getDestinationByName = (destinationsList = [], destinationName = '') => destinationsList.find((destination) => destination.name === destinationName);
 
 const getFirstType = (offersList) => Object.values(offersList)[0].type;
 

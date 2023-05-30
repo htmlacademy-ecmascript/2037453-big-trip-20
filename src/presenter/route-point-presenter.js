@@ -29,7 +29,7 @@ export default class RoutePointPresenter {
         routePoint,
         offers,
         destinations,
-        onFormSubmit: this.#handleFormSubmit,
+        onFormSubmit: this.#handleCreateFormSubmit,
         onCloseClick: this.#handlerCloseClick,
       });
       render(this.#createFormComponent, this.#routeListContainer);
@@ -40,7 +40,7 @@ export default class RoutePointPresenter {
       routePoint,
       offers,
       destinations,
-      onFormSubmit: this.#handleFormSubmit,
+      onFormSubmit: this.#handleEditFormSubmit,
       onCloseClick: this.#handlerCloseClick,
     });
 
@@ -97,9 +97,13 @@ export default class RoutePointPresenter {
     this.#replacePointToForm();
   };
 
-  #handleFormSubmit = (routePoint) => {
+  #handleEditFormSubmit = (routePoint) => {
     this.#handleDataChange(routePoint);
     this.#replaceFormToPoint();
+  };
+
+  #handleCreateFormSubmit = (routePoint) => {
+    this.#handleDataChange(routePoint);
   };
 
   #handlerCloseClick = () => {

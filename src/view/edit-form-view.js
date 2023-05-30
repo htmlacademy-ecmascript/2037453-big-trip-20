@@ -54,13 +54,13 @@ function createTypeTemplate({type}, routePoint) {
 }
 
 function createEditFormTemplate(routePoint, allOffers, allDestinations) {
-  const {id, dateStart, dateStop, type, destination, price} = routePoint;
+  const {id, dateStart, dateStop, type, offers, destination, price} = routePoint;
 
-  const offers = getOffersByType(allOffers, type);
-  const destinationName = getDestinationById(allDestinations, destination).name || '';
+  const availableOffers = getOffersByType(allOffers, type);
+  const destinationName = getDestinationById(allDestinations, destination)?.name || '';
 
   const typesListMarkup = allOffers.map((el) => createTypeTemplate(el, {id, type}));
-  const eventOffersListMarkup = offers.map((el) => createOfferTemplate(el, {id, type, offers}));
+  const eventOffersListMarkup = availableOffers.map((el) => createOfferTemplate(el, {id, type, offers}));
   const destinationsListMarkup = allDestinations.map((el) => (`<option value="${el.name}"></option>`));
 
   return `<li class="trip-events__item">
@@ -180,8 +180,6 @@ export default class EditFormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    const res = EditFormView.parseStateToRoutePoint(this._state)
-    console.log(res)
     this.#handleFormSubmit(EditFormView.parseStateToRoutePoint(this._state));
   };
 
