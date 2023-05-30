@@ -191,13 +191,11 @@ export default class EditFormView extends AbstractStatefulView {
 
     fp[0].config.onChange.push((selectedDates) => {
       const dateStart = new Date(selectedDates).toISOString();
-      console.log(dateStart);
       this._setState({dateStart});
       fp[1].set('minDate', this._state.dateStart);
     });
     fp[1].config.onChange.push((selectedDates) => {
       const dateStop = new Date(selectedDates).toISOString();
-      console.log(dateStop);
       this._setState({dateStop});
       fp[0].set('maxDate', this._state.dateStop);
     });
