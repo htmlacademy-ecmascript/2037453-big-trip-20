@@ -24,17 +24,18 @@ export default class RoutePointPresenter {
     const offersList = getOffersByType(offers, routePoint.type);
     this.#routePoint = routePoint;
 
-    if (routePoint.id === null) {
-      this.#createFormComponent = new EditFormView({
-        routePoint,
-        offers,
-        destinations,
-        onFormSubmit: this.#handleCreateFormSubmit,
-        onCloseClick: this.#handlerCloseClick,
-      });
-      render(this.#createFormComponent, this.#routeListContainer);
-      return;
-    }
+    // @todo Доработать во время реализации функционала формы добавления нового маршрута
+    // if (routePoint.id === null) {
+    //   this.#createFormComponent = new EditFormView({
+    //     routePoint,
+    //     offers,
+    //     destinations,
+    //     onFormSubmit: this.#handleCreateFormSubmit,
+    //     onCloseClick: this.#handlerCloseClick,
+    //   });
+    //   render(this.#createFormComponent, this.#routeListContainer);
+    //   return;
+    // }
 
     this.#editFormComponent = new EditFormView({
       routePoint,
@@ -102,9 +103,10 @@ export default class RoutePointPresenter {
     this.#replaceFormToPoint();
   };
 
-  #handleCreateFormSubmit = (routePoint) => {
-    this.#handleDataChange(routePoint);
-  };
+  // @todo Доработать во время реализации функционала формы добавления нового маршрута
+  // #handleCreateFormSubmit = (routePoint) => {
+  //   this.#handleDataChange(routePoint);
+  // };
 
   #handlerCloseClick = () => {
     this.#replaceFormToPoint();

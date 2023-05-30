@@ -53,15 +53,16 @@ export default class ContentPresenter {
       render(this.#sortComponent, this.#contentContainer);
       render(this.#routeListComponent, this.#contentContainer);
 
-      this.#renderRoutePoint({
-        id: null,
-        dateStart: new Date().toISOString(),
-        dateStop: new Date().toISOString(),
-        type: getFirstType(this.#offersData),
-        destination: null,
-        offers: [],
-        price: 0
-      });
+      // @todo Доработать во время реализации функционала формы добавления нового маршрута
+      // this.#renderRoutePoint({
+      //   id: null,
+      //   dateStart: new Date().toISOString(),
+      //   dateStop: new Date().toISOString(),
+      //   type: getFirstType(this.#offersData),
+      //   destination: null,
+      //   offers: [],
+      //   price: 0
+      // });
       this.#renderRoutePoints(this.#routePointsData);
     }
   }
@@ -78,7 +79,6 @@ export default class ContentPresenter {
     });
     routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
     this.#routePointersList.set(routePoint.id, routePointPresenter);
-    console.log(this.#routePointersList);
   }
 
   #removeEscPressEvent() {
@@ -94,13 +94,7 @@ export default class ContentPresenter {
   }
 
   #handleRoutePointChange = (updateRoutePoint) => {
-    if (updateRoutePoint.id === null) {
-      // @todo сделать алгоритм получения последнего id и добавления новой точки маршрута
-      updateRoutePoint.id = 999;
-      this.#renderRoutePoint(updateRoutePoint);
-    } else {
-      this.#routePointersList.get(updateRoutePoint.id).init(updateRoutePoint, this.#offersData, this.#destinationsData);
-    }
+    this.#routePointersList.get(updateRoutePoint.id).init(updateRoutePoint, this.#offersData, this.#destinationsData);
   };
 
   #handleRoutePointSelect = (id) => {
