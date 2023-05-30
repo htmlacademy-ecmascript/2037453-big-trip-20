@@ -8,6 +8,8 @@ import DestinationsModel from '../models/destinations-model';
 import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
 import {SORTS} from '../helpers/const';
+import {getFirstType} from '../helpers/utils';
+import {logPlugin} from '@babel/preset-env/lib/debug';
 
 export default class ContentPresenter {
   #activeFilter = null;
@@ -41,23 +43,6 @@ export default class ContentPresenter {
     this.#renderContent();
   }
 
-  #renderRoutePoints(data) {
-    for (let i = 0; i < data.length; i++) {
-      const routePointPresenter = new RoutePointPresenter({
-        routeListContainer: this.#routeListComponent.element,
-        onDataChange: this.#handleRoutePointChange,
-        onRoutePointSelect: this.#handleRoutePointSelect
-      });
-
-      routePointPresenter.init(data[i], this.#offersData, this.#destinationsData);
-      this.#routePointersList.set(data[i].id, routePointPresenter);
-    }
-  }
-
-  #clearRoutePoints() {
-    this.#routeListComponent.element.innerHTML = '';
-  }
-
   #renderContent() {
     this.#filterComponent = new FilterView(this.#routePointsData);
     render(this.#filterComponent, this.#filterContainer);
@@ -68,8 +53,44 @@ export default class ContentPresenter {
       render(this.#sortComponent, this.#contentContainer);
       render(this.#routeListComponent, this.#contentContainer);
 
+      // @todo Доработать во время реализации функционала формы добавления нового маршрута
+      // this.#renderRoutePoint({
+      //   id: null,
+      //   dateStart: new Date().toISOString(),
+      //   dateStop: new Date().toISOString(),
+      //   type: getFirstType(this.#offersData),
+      //   destination: null,
+      //   offers: [],
+      //   price: 0
+      // });
       this.#renderRoutePoints(this.#routePointsData);
     }
+  }
+
+  #renderRoutePoints(routePointData) {
+    routePointData.forEach((routePoint) => this.#renderRoutePoint(routePoint));
+  }
+
+  #renderRoutePoint(routePoint) {
+    const routePointPresenter = new RoutePointPresenter({
+      routeListContainer: this.#routeListComponent.element,
+      onDataChange: this.#handleRoutePointChange,
+      onRoutePointSelect: this.#handleRoutePointSelect
+    });
+    routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
+    this.#routePointersList.set(routePoint.id, routePointPresenter);
+  }
+
+  #removeEscPressEvent() {
+    if (this.#selectedRoutePointId === null) {
+      return;
+    }
+    this.#routePointersList.get(this.#selectedRoutePointId).reset();
+  }
+
+  #clearRoutePoints() {
+    this.#removeEscPressEvent();
+    this.#routeListComponent.element.innerHTML = '';
   }
 
   #handleRoutePointChange = (updateRoutePoint) => {
@@ -77,25 +98,23 @@ export default class ContentPresenter {
   };
 
   #handleRoutePointSelect = (id) => {
-    if(this.#selectedRoutePointId === id) {
+    if (this.#selectedRoutePointId === id) {
       this.#selectedRoutePointId = null;
       return;
     }
 
-    if(this.#selectedRoutePointId !== null) {
-      this.#routePointersList.get(this.#selectedRoutePointId).unSelect();
-    }
+    this.#removeEscPressEvent();
 
     this.#selectedRoutePointId = id;
   };
 
   #handleSortChange = (sortType) => {
-    if(sortType === this.#activeSortType) {
+    if (sortType === this.#activeSortType) {
       return;
     }
     this.#clearRoutePoints();
     const data = {routePoints: [...this.#routePointsData]};
-    if(sortType === 'Price') {
+    if (sortType === 'Price') {
       data['offers'] = this.#offersData;
     }
     const sortRoutePoints = SORTS[sortType](data);

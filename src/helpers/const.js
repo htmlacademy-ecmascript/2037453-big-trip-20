@@ -44,8 +44,8 @@ export const SORTS = {
     };
     const prevOffers = _getOffers(offers, prev).filter(({id}) => prev.offers.includes(id));
     const nextOffers = _getOffers(offers, next).filter(({id}) => next.offers.includes(id));
-    const prevPrice = totalPrice(prevOffers);
-    const nextPrice = totalPrice(nextOffers);
+    const prevPrice = totalPrice(prevOffers, prev.price);
+    const nextPrice = totalPrice(nextOffers, next.price);
     return prevPrice - nextPrice;
   }),
   Offers: false

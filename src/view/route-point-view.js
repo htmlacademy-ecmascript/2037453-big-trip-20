@@ -1,6 +1,14 @@
 import AbstractView from '../framework/view/abstract-view';
 import {ICONS} from '../helpers/const';
-import {routeDateFormat, dateFormat, timeFormat, durationFormat, dateISOFormat, totalPrice} from '../helpers/utils';
+import {
+  routeDateFormat,
+  dateFormat,
+  timeFormat,
+  durationFormat,
+  dateISOFormat,
+  totalPrice,
+  getDestinationById
+} from '../helpers/utils';
 
 function createOfferTemplate({title, price}) {
   return `<li class="event__offer">
@@ -10,7 +18,7 @@ function createOfferTemplate({title, price}) {
           </li>`;
 }
 
-function createRoutePointTemplate({dateStart, dateStop, type, offers, isFavorite}) {
+function createRoutePointTemplate({dateStart, dateStop, type, offers, destination, isFavorite, price}) {
   const offersListMarkup = offers.map((el) => createOfferTemplate(el));
   return `<li class="trip-events__item">
             <div class="event">
@@ -18,7 +26,7 @@ function createRoutePointTemplate({dateStart, dateStop, type, offers, isFavorite
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="${ICONS[type]}" alt="Event type icon">
                 </div>
-                <h3 class="event__title">${type}</h3>
+                <h3 class="event__title">${type} &minus; ${destination}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime="${dateISOFormat(dateStart)}">${timeFormat(dateStart)}</time>
@@ -28,7 +36,7 @@ function createRoutePointTemplate({dateStart, dateStop, type, offers, isFavorite
                   <p class="event__duration">${durationFormat(dateStart, dateStop)}</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">${totalPrice(offers)}</span>
+                  &euro;&nbsp;<span class="event__price-value">${totalPrice(offers, price)}</span>
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">${offersListMarkup.join('')}</ul>
@@ -50,10 +58,11 @@ export default class RoutePointView extends AbstractView {
   #handleEditClick = null;
   #handleFavoriteClick = null;
 
-  constructor({routePoint, offersList, onEditClick, onFavoriteClick}) {
+  constructor({routePoint, offersList, destinations, onEditClick, onFavoriteClick}) {
     super();
-    const routePointOffers = offersList.offers.filter((el) => routePoint.offers.includes(el.id));
-    this.#data = {...routePoint, offers: routePointOffers};
+    const destination = getDestinationById(destinations, routePoint.destination)?.name || '';
+    const routePointOffers = offersList.filter((el) => routePoint.offers.includes(el.id));
+    this.#data = {...routePoint, offers: routePointOffers, destination};
     this.#handleEditClick = onEditClick;
     this.#handleFavoriteClick = onFavoriteClick;
 
