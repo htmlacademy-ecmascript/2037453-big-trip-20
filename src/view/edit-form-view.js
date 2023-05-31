@@ -183,7 +183,7 @@ export default class EditFormView extends AbstractStatefulView {
     const fp = flatpickr(myInput, {
       enableTime: true,
       'time_24hr': true,
-      dateFormat: '  y/m/d H:i',
+      dateFormat: 'y/m/d H:i',
     });
 
     fp[0].set('maxDate', this._state.dateStop);
