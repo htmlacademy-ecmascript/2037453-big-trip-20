@@ -1,4 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.css';
 import {ICONS} from '../helpers/const';
 import {
   dateTimeFormat,
@@ -100,7 +102,7 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
                     <span class="visually-hidden">Price</span>
                     &euro;
                   </label>
-                  <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
+                  <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}" pattern="[0-9]{1,}">
                 </div>
                 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                 <button class="event__reset-btn" type="reset">Delete</button>
@@ -176,6 +178,27 @@ export default class EditFormView extends AbstractStatefulView {
 
     this.element.querySelector('.event__available-offers')
       .addEventListener('change', this.#offerChangeHandler);
+
+    const myInput = this.element.querySelectorAll('.event__input--time');
+    const fp = flatpickr(myInput, {
+      enableTime: true,
+      'time_24hr': true,
+      dateFormat: 'y/m/d H:i',
+    });
+
+    fp[0].set('maxDate', this._state.dateStop);
+    fp[1].set('minDate', this._state.dateStart);
+
+    fp[0].config.onChange.push((selectedDates) => {
+      const dateStart = new Date(selectedDates).toISOString();
+      this._setState({dateStart});
+      fp[1].set('minDate', this._state.dateStart);
+    });
+    fp[1].config.onChange.push((selectedDates) => {
+      const dateStop = new Date(selectedDates).toISOString();
+      this._setState({dateStop});
+      fp[0].set('maxDate', this._state.dateStop);
+    });
   }
 
   #formSubmitHandler = (evt) => {

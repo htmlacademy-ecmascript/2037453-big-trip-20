@@ -8,8 +8,8 @@ import DestinationsModel from '../models/destinations-model';
 import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
 import {SORTS} from '../helpers/const';
-import {getFirstType} from '../helpers/utils';
-import {logPlugin} from '@babel/preset-env/lib/debug';
+// import {getFirstType} from '../helpers/utils';
+// import {logPlugin} from '@babel/preset-env/lib/debug';
 
 export default class ContentPresenter {
   #activeFilter = null;
