@@ -2,19 +2,20 @@ import {render, replace, remove} from '../framework/render';
 import RoutePointView from '../view/route-point-view';
 import EditFormView from '../view/edit-form-view';
 import {getOffersByType} from '../helpers/utils';
+import {UserAction, UpdateType} from '../helpers/const';
 
 export default class RoutePointPresenter {
   #routeListContainer = null;
   #routePointComponent = null;
-  #createFormComponent = null;
+  // #createFormComponent = null;
   #editFormComponent = null;
   #routePoint = null;
-  #handleDataChange = null;
+  #handleViewAction = null;
   #handleRoutePointSelect = null;
 
-  constructor({routeListContainer, onDataChange, onRoutePointSelect}) {
+  constructor({routeListContainer, onViewAction, onRoutePointSelect}) {
     this.#routeListContainer = routeListContainer;
-    this.#handleDataChange = onDataChange;
+    this.#handleViewAction = onViewAction;
     this.#handleRoutePointSelect = onRoutePointSelect;
   }
 
@@ -70,6 +71,11 @@ export default class RoutePointPresenter {
     remove(prevEditFormComponent);
   }
 
+  destroy() {
+    remove(this.#routePointComponent);
+    remove(this.#editFormComponent);
+  }
+
   reset() {
     this.#replaceFormToPoint();
   }
@@ -87,6 +93,14 @@ export default class RoutePointPresenter {
     this.#handleRoutePointSelect(this.#routePoint.id);
   }
 
+  #handleEditClick = () => {
+    this.#replacePointToForm();
+  };
+
+  #handlerCloseClick = () => {
+    this.#replaceFormToPoint();
+  };
+
   #escPressHandler = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
@@ -94,25 +108,30 @@ export default class RoutePointPresenter {
     }
   };
 
-  #handleEditClick = () => {
-    this.#replacePointToForm();
+  #handleFavoriteClick = () => {
+    this.#handleViewAction(
+      UserAction.UPDATE_ROUTE_POINT,
+      UpdateType.PATCH,
+      {...this.#routePoint, isFavorite: !this.#routePoint.isFavorite}
+    );
   };
 
   #handleEditFormSubmit = (routePoint) => {
-    this.#handleDataChange(routePoint);
+    this.#handleViewAction(
+      UserAction.UPDATE_ROUTE_POINT,
+      UpdateType.MINOR,
+      routePoint
+    );
     this.#replaceFormToPoint();
   };
 
-  // @todo Доработать во время реализации функционала формы добавления нового маршрута
+  // @todo Допилить, когда дойду до работы с rest api
   // #handleCreateFormSubmit = (routePoint) => {
-  //   this.#handleDataChange(routePoint);
+  //   this.#handleViewAction(
+  //     UserAction.UPDATE_ROUTE_POINT,
+  //     UpdateType.MINOR,
+  //     routePoint
+  //   );
+  // this.#replaceFormToPoint();
   // };
-
-  #handlerCloseClick = () => {
-    this.#replaceFormToPoint();
-  };
-
-  #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#routePoint, isFavorite: !this.#routePoint.isFavorite});
-  };
 }

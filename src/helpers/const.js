@@ -29,15 +29,15 @@ export const FILTERS = {
 };
 
 export const SORTS = {
-  Day: ({routePoints}) => routePoints,
-  Event: false,
-  Time: ({routePoints}) => routePoints.sort((prev, next) => {
+  'Day': (routePoints) => routePoints,
+  'Event': false,
+  'Time': (routePoints) => routePoints.sort((prev, next) => {
     const _getMilliseconds = (date) => dayjs(date).valueOf();
     const prevTime = _getMilliseconds(prev.dateStart);
     const nextTime = _getMilliseconds(next.dateStart);
     return prevTime - nextTime;
   }),
-  Price: ({routePoints, offers}) => routePoints.sort((prev, next) => {
+  'Price': (routePoints, offers) => routePoints.sort((prev, next) => {
     const _getOffers = (allOffers, routePoint) => {
       const filteredOffers = allOffers.find((offer) => offer.type === routePoint.type).offers;
       return filteredOffers.filter(({id}) => routePoint.offers.includes(id));
@@ -48,7 +48,21 @@ export const SORTS = {
     const nextPrice = totalPrice(nextOffers, next.price);
     return prevPrice - nextPrice;
   }),
-  Offers: false
+  'Offers': false
+};
+
+export const UserAction = {
+  ADD_ROUTE_POINT: 'ADD_ROUTE_POINT',
+  UPDATE_ROUTE_POINT: 'UPDATE_ROUTE_POINT',
+  DELETE_ROUTE_POINT: 'DELETE_ROUTE_POINT',
+  SORT_ROUTE_POINTS: 'SORT_ROUTE_POINTS',
+  FILTER_ROUTE_POINTS: 'FILTER_ROUTE_POINTS',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
 };
 
 export const CURRENT_URL = window.location.href;
