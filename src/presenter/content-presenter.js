@@ -35,20 +35,12 @@ export default class ContentPresenter {
   }
 
   get routePoints() {
-    const routePoints = [...this.#routePointsModel.routePoints];
-    switch (this.#activeFilterType) {
-      case 'Future':
-        return FILTERS.Future(routePoints);
-      case 'Present':
-        return FILTERS.Present(routePoints);
-      case 'Past':
-        return FILTERS.Past(routePoints);
+    let routePoints = [...this.#routePointsModel.routePoints];
+    if(Object.keys(FILTERS).some((key) => key === this.#activeFilterType)) {
+      routePoints = FILTERS[this.#activeFilterType](routePoints);
     }
-    switch (this.#activeSortType) {
-      case 'Time':
-        return SORTS.Time(routePoints);
-      case 'Price':
-        return SORTS.Price(routePoints, this.#offersData);
+    if(Object.keys(SORTS).some((key) => key === this.#activeSortType)) {
+      routePoints = SORTS[this.#activeSortType](routePoints, this.#offersData);
     }
     return routePoints;
   }
@@ -61,7 +53,7 @@ export default class ContentPresenter {
 
   #renderContent() {
     const routePoints = this.routePoints;
-    this.#filterComponent = new FilterView(routePoints, this.#activeFilterType, this.#handleFilterChange);
+    this.#filterComponent = new FilterView(this.#routePointsModel.routePoints, this.#activeFilterType, this.#handleFilterChange);
     render(this.#filterComponent, this.#filterContainer);
     if (routePoints.length <= 0) {
       render(this.#stubComponent, this.#contentContainer);

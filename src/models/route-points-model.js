@@ -5,8 +5,8 @@ export default class RoutePointsModel extends Observable {
   #routePoints = Object.fromEntries([
     {
       'id': 10,
-      'dateStart': '2023-05-29T00:22:00.000Z',
-      'dateStop': '2023-05-30T18:54:00.000Z',
+      'dateStart': '2023-07-29T00:22:00.000Z',
+      'dateStop': '2023-07-30T18:54:00.000Z',
       'type': 'Restaurant',
       'offers': [
         1
@@ -29,8 +29,8 @@ export default class RoutePointsModel extends Observable {
     },
     {
       'id': 8,
-      'dateStart': '2023-05-22T21:41:00.000Z',
-      'dateStop': '2023-05-24T00:07:00.000Z',
+      'dateStart': '2023-06-01T21:41:00.000Z',
+      'dateStop': '2023-06-15T00:07:00.000Z',
       'type': 'Drive',
       'offers': [
         1
