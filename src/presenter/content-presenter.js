@@ -7,9 +7,7 @@ import OffersModel from '../models/offers-model';
 import DestinationsModel from '../models/destinations-model';
 import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
-import {SORTS, UpdateType, UserAction} from '../helpers/const';
-// import {getFirstType} from '../helpers/utils';
-// import {logPlugin} from '@babel/preset-env/lib/debug';
+import {FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
 
 export default class ContentPresenter {
   #activeFilterType = null;
@@ -23,7 +21,6 @@ export default class ContentPresenter {
   #routeListComponent = new RoutePointsListView();
   #filterContainer = null;
   #contentContainer = null;
-  // #routePointsData = null;
   #offersData = null;
   #destinationsData = null;
   #routePointsList = {};
@@ -32,24 +29,31 @@ export default class ContentPresenter {
   constructor({filterContainer, contentContainer}) {
     this.#filterContainer = filterContainer;
     this.#contentContainer = contentContainer;
-    this.#activeFilterType = 'Everything';
     this.#stubComponent = new StubView(this.#activeFilterType);
 
     this.#routePointsModel.addObserver(this.#handleModelEvent);
   }
 
   get routePoints() {
-    // switch (this.#activeSortType) {
-    //   case 'Time':
-    //     return [...this.#routePointsModel.routePoints];
-    //   case 'Price':
-    //     return [...this.#routePointsModel.routePoints];
-    // }
-    return this.#routePointsModel.routePoints;
+    const routePoints = [...this.#routePointsModel.routePoints];
+    switch (this.#activeFilterType) {
+      case 'Future':
+        return FILTERS.Future(routePoints);
+      case 'Present':
+        return FILTERS.Present(routePoints);
+      case 'Past':
+        return FILTERS.Past(routePoints);
+    }
+    switch (this.#activeSortType) {
+      case 'Time':
+        return SORTS.Time(routePoints);
+      case 'Price':
+        return SORTS.Price(routePoints, this.#offersData);
+    }
+    return routePoints;
   }
 
   async init() {
-    // this.#routePointsData = await this.#routePointsModel.routePoints;
     this.#offersData = await this.#offersModel.offers;
     this.#destinationsData = await this.#destinationsModel.destinations;
     this.#renderContent();
@@ -57,12 +61,12 @@ export default class ContentPresenter {
 
   #renderContent() {
     const routePoints = this.routePoints;
-    this.#filterComponent = new FilterView(this.routePoints);
+    this.#filterComponent = new FilterView(routePoints, this.#activeFilterType, this.#handleFilterChange);
     render(this.#filterComponent, this.#filterContainer);
     if (routePoints.length <= 0) {
       render(this.#stubComponent, this.#contentContainer);
     } else {
-      this.#sortComponent = new SortView(this.#handleSortChange);
+      this.#sortComponent = new SortView(this.#activeSortType, this.#handleSortChange);
       render(this.#sortComponent, this.#contentContainer);
       render(this.#routeListComponent, this.#contentContainer);
 
@@ -129,17 +133,15 @@ export default class ContentPresenter {
   };
 
   #handleSortChange = (sortType) => {
-    if (sortType === this.#activeSortType) {
-      return;
-    }
-    this.#clearRoutePoints();
-    const data = {routePoints: [...this.routePoints]};
-    if (sortType === 'Price') {
-      data['offers'] = this.#offersData;
-    }
-    const sortRoutePoints = SORTS[sortType](data);
-    this.#renderRoutePoints(sortRoutePoints);
     this.#activeSortType = sortType;
+    this.#clearRoutePoints();
+    this.#renderContent();
+  };
+
+  #handleFilterChange = (filterType) => {
+    this.#activeFilterType = filterType;
+    this.#clearRoutePoints();
+    this.#renderContent();
   };
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -172,7 +174,7 @@ export default class ContentPresenter {
         this.#renderContent();
         break;
       case UpdateType.MAJOR:
-        this.#clearRoutePoints({resetSortTyp: true, resetFilterType: true});
+        this.#clearRoutePoints({resetSortType: true, resetFilterType: true});
         this.#renderContent();
         break;
     }

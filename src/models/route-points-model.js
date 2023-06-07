@@ -156,14 +156,4 @@ export default class RoutePointsModel extends Observable {
     delete this.#routePoints[id];
     this._notify(updateType, null);
   }
-
-  sortRoutePoints(updateType, update) {
-    console.log(update);
-    this._notify(updateType, null);
-  }
-
-  filterRoutePoints(updateType, update) {
-    console.log(update);
-    this._notify(updateType, null);
-  }
 }

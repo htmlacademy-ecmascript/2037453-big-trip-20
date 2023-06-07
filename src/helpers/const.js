@@ -22,10 +22,10 @@ export const STUBS = {
 };
 
 export const FILTERS = {
-  Everything: (point) => point,
-  Future: (point) => point.filter(({dateStart}) => new Date(dateStart) > now),
-  Present: (point) => point.filter(({dateStart, dateStop}) => new Date(dateStart) <= now && new Date(dateStop) >= now),
-  Past: (point) => point.filter(({dateStop}) => new Date(dateStop) < now),
+  'Everything': (routePoints) => routePoints,
+  'Future': (routePoints) => routePoints.filter(({dateStart}) => new Date(dateStart) > now),
+  'Present': (routePoints) => routePoints.filter(({dateStart, dateStop}) => new Date(dateStart) <= now && new Date(dateStop) >= now),
+  'Past': (routePoints) => routePoints.filter(({dateStop}) => new Date(dateStop) < now),
 };
 
 export const SORTS = {

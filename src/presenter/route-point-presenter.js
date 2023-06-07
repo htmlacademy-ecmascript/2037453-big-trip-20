@@ -119,7 +119,7 @@ export default class RoutePointPresenter {
   #handleEditFormSubmit = (routePoint) => {
     this.#handleViewAction(
       UserAction.UPDATE_ROUTE_POINT,
-      UpdateType.MINOR,
+      UpdateType.MAJOR,
       routePoint
     );
     this.#replaceFormToPoint();
