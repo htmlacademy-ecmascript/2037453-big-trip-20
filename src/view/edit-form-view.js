@@ -166,7 +166,7 @@ export default class EditFormView extends AbstractStatefulView {
 
   #addListeners() {
     this.element.querySelector('form')
-      .addEventListener('submit', this.#formSubmitHandler);
+      .addEventListener('submit', this.#SubmitClickHandler);
 
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#closeClickHandler);
@@ -184,7 +184,7 @@ export default class EditFormView extends AbstractStatefulView {
       .addEventListener('change', this.#offerChangeHandler);
 
     this.element.querySelector('.event__reset-btn')
-      .addEventListener('click', this.#deleteHandler);
+      .addEventListener('click', this.#deleteClickHandler);
 
     const myInput = this.element.querySelectorAll('.event__input--time');
     const fp = flatpickr(myInput, {
@@ -208,7 +208,7 @@ export default class EditFormView extends AbstractStatefulView {
     });
   }
 
-  #formSubmitHandler = (evt) => {
+  #SubmitClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleSubmitClick(EditFormView.parseStateToRoutePoint(this._state));
   };
@@ -216,6 +216,11 @@ export default class EditFormView extends AbstractStatefulView {
   #closeClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleCloseClick();
+  };
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(this.#pointId);
   };
 
   #typeChangeHandler = (evt) => {
@@ -255,10 +260,5 @@ export default class EditFormView extends AbstractStatefulView {
     this._setState({
       price
     });
-  };
-
-  #deleteHandler = (evt) => {
-    evt.preventDefault();
-    this.#handleDeleteClick(this.#pointId);
   };
 }
