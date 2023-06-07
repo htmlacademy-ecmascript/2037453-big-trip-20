@@ -125,17 +125,21 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
 
 export default class EditFormView extends AbstractStatefulView {
   _state = null;
+  #pointId = null;
   #offers = null;
   #destinations = null;
-  #handleFormSubmit = null;
+  #handleSubmitClick = null;
+  #handleDeleteClick = null;
   #handleCloseClick = null;
 
-  constructor({routePoint, offers, destinations, onFormSubmit, onCloseClick}) {
+  constructor({routePoint, offers, destinations, onSubmitClick, onCloseClick, onDeleteClick}) {
     super();
+    this.#pointId = routePoint.id;
     this._setState(EditFormView.parseRoutePointToState(routePoint));
     this.#offers = offers;
     this.#destinations = destinations;
-    this.#handleFormSubmit = onFormSubmit;
+    this.#handleSubmitClick = onSubmitClick;
+    this.#handleDeleteClick = onDeleteClick;
     this.#handleCloseClick = onCloseClick;
     this.#addListeners();
   }
@@ -179,6 +183,9 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__available-offers')
       .addEventListener('change', this.#offerChangeHandler);
 
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#deleteHandler);
+
     const myInput = this.element.querySelectorAll('.event__input--time');
     const fp = flatpickr(myInput, {
       enableTime: true,
@@ -203,7 +210,7 @@ export default class EditFormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(EditFormView.parseStateToRoutePoint(this._state));
+    this.#handleSubmitClick(EditFormView.parseStateToRoutePoint(this._state));
   };
 
   #closeClickHandler = (evt) => {
@@ -248,5 +255,10 @@ export default class EditFormView extends AbstractStatefulView {
     this._setState({
       price
     });
+  };
+
+  #deleteHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(this.#pointId);
   };
 }

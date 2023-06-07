@@ -18,7 +18,7 @@ export default class ContentPresenter {
   #filterComponent = null;
   #stubComponent = null;
   #sortComponent = null;
-  #routeListComponent = new RoutePointsListView();
+  #routeListComponent = null;
   #filterContainer = null;
   #contentContainer = null;
   #offersData = null;
@@ -29,17 +29,15 @@ export default class ContentPresenter {
   constructor({filterContainer, contentContainer}) {
     this.#filterContainer = filterContainer;
     this.#contentContainer = contentContainer;
-    this.#stubComponent = new StubView(this.#activeFilterType);
-
     this.#routePointsModel.addObserver(this.#handleModelEvent);
   }
 
   get routePoints() {
     let routePoints = [...this.#routePointsModel.routePoints];
-    if(Object.keys(FILTERS).some((key) => key === this.#activeFilterType)) {
+    if (Object.keys(FILTERS).some((key) => key === this.#activeFilterType)) {
       routePoints = FILTERS[this.#activeFilterType](routePoints);
     }
-    if(Object.keys(SORTS).some((key) => key === this.#activeSortType)) {
+    if (Object.keys(SORTS).some((key) => key === this.#activeSortType)) {
       routePoints = SORTS[this.#activeSortType](routePoints, this.#offersData);
     }
     return routePoints;
@@ -56,10 +54,12 @@ export default class ContentPresenter {
     this.#filterComponent = new FilterView(this.#routePointsModel.routePoints, this.#activeFilterType, this.#handleFilterChange);
     render(this.#filterComponent, this.#filterContainer);
     if (routePoints.length <= 0) {
+      this.#stubComponent = new StubView(this.#activeFilterType);
       render(this.#stubComponent, this.#contentContainer);
     } else {
       this.#sortComponent = new SortView(this.#activeSortType, this.#handleSortChange);
       render(this.#sortComponent, this.#contentContainer);
+      this.#routeListComponent = new RoutePointsListView();
       render(this.#routeListComponent, this.#contentContainer);
 
       // @todo Доработать во время реализации функционала формы добавления нового маршрута
@@ -90,13 +90,6 @@ export default class ContentPresenter {
     routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
   }
 
-  #removeEscPressEvent() {
-    if (this.#selectedRoutePointId === null) {
-      return;
-    }
-    this.#routePointsList.get(this.#selectedRoutePointId).reset();
-  }
-
   #clearRoutePoints({resetSortType = false, resetFilterType = false} = {}) {
     Object.values(this.#routePointsList).forEach((routePoint) => routePoint.destroy());
     this.#routePointsList = {};
@@ -113,16 +106,21 @@ export default class ContentPresenter {
     }
   }
 
+
+  // @todo Переосмыслить запоминание редактируемой точки маршрута
   #handleRoutePointSelect = (id) => {
     if (this.#selectedRoutePointId === id) {
       this.#selectedRoutePointId = null;
       return;
     }
 
-    this.#removeEscPressEvent();
+    if (this.#selectedRoutePointId !== null) {
+      this.#routePointsList?.[this.#selectedRoutePointId]?.reset();
+    }
 
     this.#selectedRoutePointId = id;
   };
+
 
   #handleSortChange = (sortType) => {
     this.#activeSortType = sortType;

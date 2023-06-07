@@ -42,7 +42,8 @@ export default class RoutePointPresenter {
       routePoint,
       offers,
       destinations,
-      onFormSubmit: this.#handleEditFormSubmit,
+      onSubmitClick: this.#handleEditFormSubmit,
+      onDeleteClick: this.#handleDeleteClick,
       onCloseClick: this.#handlerCloseClick,
     });
 
@@ -123,6 +124,14 @@ export default class RoutePointPresenter {
       routePoint
     );
     this.#replaceFormToPoint();
+  };
+
+  #handleDeleteClick = (routePoint) => {
+    this.#handleViewAction(
+      UserAction.DELETE_ROUTE_POINT,
+      UpdateType.MAJOR,
+      routePoint
+    );
   };
 
   // @todo Допилить, когда дойду до работы с rest api
