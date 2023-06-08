@@ -13,33 +13,31 @@ export const ICONS = {
   'Sightseeing': 'img/icons/sightseeing.png',
   'Restaurant': 'img/icons/restaurant.png'
 };
-
 export const STUBS = {
   Everything: 'Click New Event to create your first point',
   Future: 'There are no past events now',
   Present: 'There are no present events now',
   Past: 'There are no future events now',
 };
-
 export const FILTERS = {
   'Everything': (routePoints) => routePoints,
   'Future': (routePoints) => routePoints.filter(({dateStart}) => new Date(dateStart) > now),
-  'Present': (routePoints) => routePoints.filter(({dateStart, dateStop}) => new Date(dateStart) <= now && new Date(dateStop) >= now),
+  'Present': (routePoints) => routePoints.filter(({
+    dateStart,
+    dateStop
+  }) => new Date(dateStart) <= now && new Date(dateStop) >= now),
   'Past': (routePoints) => routePoints.filter(({dateStop}) => new Date(dateStop) < now),
 };
-
 export const SORTS = {
   'Day': (routePoints) => routePoints.sort((prev, next) => {
-    const _getMilliseconds = (date) => dayjs(date).valueOf();
-    const prevTime = _getMilliseconds(prev.dateStart);
-    const nextTime = _getMilliseconds(next.dateStart);
+    const prevTime = dayjs(prev.dateStart).valueOf();
+    const nextTime = dayjs(next.dateStart).valueOf();
     return prevTime - nextTime;
   }),
   'Event': false,
   'Time': (routePoints) => routePoints.sort((prev, next) => {
-    const _getMilliseconds = (date) => dayjs(date).valueOf();
-    const prevDuration = _getMilliseconds(prev.dateStop) - _getMilliseconds(prev.dateStart);
-    const nextDuration = _getMilliseconds(next.dateStop) - _getMilliseconds(next.dateStart);
+    const prevDuration = dayjs(prev.dateStop).valueOf() - dayjs(prev.dateStart).valueOf();
+    const nextDuration = dayjs(next.dateStop).valueOf() - dayjs(next.dateStart).valueOf();
     return prevDuration - nextDuration;
   }),
   'Price': (routePoints, offers) => routePoints.sort((prev, next) => {
@@ -55,7 +53,6 @@ export const SORTS = {
   }),
   'Offers': false
 };
-
 export const UserAction = {
   ADD_ROUTE_POINT: 'ADD_ROUTE_POINT',
   UPDATE_ROUTE_POINT: 'UPDATE_ROUTE_POINT',
@@ -64,11 +61,9 @@ export const UserAction = {
   FILTER_ROUTE_POINTS: 'FILTER_ROUTE_POINTS',
   SELECT_POINT: 'SELECT_POINT',
 };
-
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
 };
-
 export const CURRENT_URL = window.location.href;
