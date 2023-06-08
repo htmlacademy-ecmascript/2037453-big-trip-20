@@ -29,15 +29,11 @@ export const FILTERS = {
   'Past': (routePoints) => routePoints.filter(({dateStop}) => new Date(dateStop) < now),
 };
 export const SORTS = {
-  'Day': (routePoints) => routePoints.sort((prev, next) => {
-    const prevTime = dayjs(prev.dateStart).valueOf();
-    const nextTime = dayjs(next.dateStart).valueOf();
-    return prevTime - nextTime;
-  }),
+  'Day': (routePoints) => routePoints.sort((prev, next) => dayjs(prev.dateStart).diff(dayjs(next.dateStart))),
   'Event': false,
   'Time': (routePoints) => routePoints.sort((prev, next) => {
-    const prevDuration = dayjs(prev.dateStop).valueOf() - dayjs(prev.dateStart).valueOf();
-    const nextDuration = dayjs(next.dateStop).valueOf() - dayjs(next.dateStart).valueOf();
+    const prevDuration = dayjs(prev.dateStop).diff(dayjs(prev.dateStart));
+    const nextDuration = dayjs(next.dateStop).diff(dayjs(next.dateStart));
     return prevDuration - nextDuration;
   }),
   'Price': (routePoints, offers) => routePoints.sort((prev, next) => {
