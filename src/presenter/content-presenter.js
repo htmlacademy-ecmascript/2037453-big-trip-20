@@ -27,6 +27,7 @@ export default class ContentPresenter {
   #routePointsList = {};
   #selectedRoutePointId = null;
   #createFormPresenter = null;
+  #noRoutePoints = false;
 
   constructor({filterContainer, contentContainer}) {
     this.#filterContainer = filterContainer;
@@ -36,6 +37,7 @@ export default class ContentPresenter {
 
   get routePoints() {
     let routePoints = [...this.#routePointsModel.routePoints];
+    this.#noRoutePoints = !routePoints.length;
     if (Object.keys(FILTERS).some((key) => key === this.#activeFilterType)) {
       routePoints = FILTERS[this.#activeFilterType](routePoints);
     }
@@ -58,7 +60,7 @@ export default class ContentPresenter {
     this.#routeListComponent = new RoutePointsListView();
     render(this.#routeListComponent, this.#contentContainer);
     if (routePoints.length <= 0) {
-      this.#stubComponent = new StubView(this.#activeFilterType);
+      this.#stubComponent = new StubView(this.#activeFilterType, this.#noRoutePoints);
       render(this.#stubComponent, this.#routeListComponent.element);
     } else {
       this.#createFormPresenter = new CreateFormPresenter({
