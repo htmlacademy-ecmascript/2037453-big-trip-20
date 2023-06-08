@@ -12,8 +12,8 @@ import {FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
 
 
 export default class ContentPresenter {
-  #activeFilterType = null;
-  #activeSortType = null;
+  #activeFilterType = Object.keys(FILTERS)[0];
+  #activeSortType = Object.keys(SORTS)[0];
   #routePointsModel = new RoutePointsModel();
   #offersModel = new OffersModel();
   #destinationsModel = new DestinationsModel();
@@ -54,7 +54,7 @@ export default class ContentPresenter {
 
   #renderContent() {
     const routePoints = this.routePoints;
-    this.#filterComponent = new FilterView(this.#routePointsModel.routePoints, this.#activeFilterType, this.#handleFilterChange);
+    this.#filterComponent = new FilterView(this.#routePointsModel.routePoints, this.#activeFilterType, this.#handleViewAction);
     render(this.#filterComponent, this.#filterContainer);
     this.#routeListComponent = new RoutePointsListView();
     render(this.#routeListComponent, this.#contentContainer);
@@ -68,22 +68,20 @@ export default class ContentPresenter {
       });
       this.#createFormPresenter.init(null, this.#offersData, this.#destinationsData);
       this.#renderRoutePoints(routePoints);
-      this.#sortComponent = new SortView(this.#activeSortType, this.#handleSortChange);
+      this.#sortComponent = new SortView(this.#activeSortType, this.#handleViewAction);
       render(this.#sortComponent, this.#routeListComponent.element, RenderPosition.BEFOREBEGIN);
     }
   }
 
   #renderRoutePoints(routePointData) {
-    routePointData.forEach((routePoint) => this.#renderRoutePoint(routePoint));
-  }
-
-  #renderRoutePoint(routePoint) {
-    const routePointPresenter = new RoutePointPresenter({
-      routeListContainer: this.#routeListComponent.element,
-      onViewAction: this.#handleViewAction
+    routePointData.forEach((routePoint) => {
+      const routePointPresenter = new RoutePointPresenter({
+        routeListContainer: this.#routeListComponent.element,
+        onViewAction: this.#handleViewAction
+      });
+      this.#routePointsList[routePoint.id] = routePointPresenter;
+      routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
     });
-    this.#routePointsList[routePoint.id] = routePointPresenter;
-    routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
   }
 
   #clearRoutePoints({resetSortType = false, resetFilterType = false} = {}) {
@@ -94,15 +92,15 @@ export default class ContentPresenter {
     remove(this.#filterComponent);
 
     if (resetSortType) {
-      this.#activeSortType = 'Day';
+      this.#activeSortType = Object.keys(SORTS)[0];
     }
 
     if (resetFilterType) {
-      this.#activeFilterType = 'Everything';
+      this.#activeFilterType = Object.keys(FILTERS)[0];
     }
   }
 
-  #handleOpenEditForm = (data) => {
+  #handleSetCurrentRoutePointId = (data) => {
     const id = data?.id || 0;
 
     if (this.#selectedRoutePointId === id) {
@@ -121,18 +119,6 @@ export default class ContentPresenter {
     this.#selectedRoutePointId = id;
   };
 
-  #handleSortChange = (sortType) => {
-    this.#activeSortType = sortType;
-    this.#clearRoutePoints();
-    this.#renderContent();
-  };
-
-  #handleFilterChange = (filterType) => {
-    this.#activeFilterType = filterType;
-    this.#clearRoutePoints();
-    this.#renderContent();
-  };
-
   #handleViewAction = (actionType, updateType, data) => {
     switch (actionType) {
       case UserAction.ADD_ROUTE_POINT:
@@ -145,14 +131,16 @@ export default class ContentPresenter {
         // @todo Подумать, как запихнуть delete в PATCH
         this.#routePointsModel.deleteRoutePoint(updateType, data);
         break;
-      // case UserAction.SORT_ROUTE_POINTS:
-      //   this.#routePointsModel.sortRoutePoints(updateType, data);
-      //   break;
-      // case UserAction.FILTER_ROUTE_POINTS:
-      //   this.#routePointsModel.filterRoutePoints(updateType, data);
-      //   break;
+      case UserAction.SORT_ROUTE_POINTS:
+        this.#activeSortType = data;
+        this.#handleModelEvent(updateType);
+        break;
+      case UserAction.FILTER_ROUTE_POINTS:
+        this.#activeFilterType = data;
+        this.#handleModelEvent(updateType);
+        break;
       case UserAction.SELECT_POINT:
-        this.#handleOpenEditForm(data);
+        this.#handleSetCurrentRoutePointId(data);
         break;
     }
   };

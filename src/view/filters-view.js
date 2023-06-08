@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import {FILTERS} from '../helpers/const';
+import {UserAction, UpdateType} from '../helpers/const';
 
 function createFilterTemplate(routePoints, activeFilterType) {
   const filtersMakeup = Object.entries(FILTERS).map(([key, val]) => {
@@ -22,13 +23,13 @@ function createFilterTemplate(routePoints, activeFilterType) {
 export default class FilterView extends AbstractView {
   #routePoints = null;
   #activeFilterType = null;
-  #handleFilterChange = null;
+  #handleViewAction = null;
 
-  constructor(routePoints, activeFilterType, onFilterChange) {
+  constructor(routePoints, activeFilterType, onViewAction) {
     super();
     this.#routePoints = routePoints;
-    this.#handleFilterChange = onFilterChange;
-    this.#activeFilterType = activeFilterType || Object.keys(FILTERS)[0];
+    this.#handleViewAction = onViewAction;
+    this.#activeFilterType = activeFilterType;
     this.element.addEventListener('change', this.#filterChangeHandler);
   }
 
@@ -42,6 +43,10 @@ export default class FilterView extends AbstractView {
     if(!filterType) {
       return;
     }
-    this.#handleFilterChange(filterType);
+    this.#handleViewAction(
+      UserAction.FILTER_ROUTE_POINTS,
+      UpdateType.MINOR,
+      filterType
+    );
   };
 }

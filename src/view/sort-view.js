@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import {SORTS} from '../helpers/const';
+import {SORTS, UpdateType, UserAction} from '../helpers/const';
 
 function createSortTemplate(activeSortType) {
   const sortsMakeup = Object.entries(SORTS).map(([key, val]) => {
@@ -17,12 +17,12 @@ function createSortTemplate(activeSortType) {
 
 export default class SortView extends AbstractView {
   #activeSortType = null;
-  #handleSortChange = null;
+  #handleViewAction = null;
 
-  constructor(activeSortType, onSortChange) {
+  constructor(activeSortType, onViewAction) {
     super();
-    this.#handleSortChange = onSortChange;
-    this.#activeSortType = activeSortType || Object.keys(SORTS)[0];
+    this.#handleViewAction = onViewAction;
+    this.#activeSortType = activeSortType;
 
     this.element.addEventListener('change', this.#sortChangeHandler);
   }
@@ -37,6 +37,10 @@ export default class SortView extends AbstractView {
     if (!sortType) {
       return;
     }
-    this.#handleSortChange(sortType);
+    this.#handleViewAction(
+      UserAction.SORT_ROUTE_POINTS,
+      UpdateType.MINOR,
+      sortType
+    );
   };
 }
