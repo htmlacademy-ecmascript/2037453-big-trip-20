@@ -13,31 +13,30 @@ export const ICONS = {
   'Sightseeing': 'img/icons/sightseeing.png',
   'Restaurant': 'img/icons/restaurant.png'
 };
-
 export const STUBS = {
   Everything: 'Click New Event to create your first point',
   Future: 'There are no past events now',
   Present: 'There are no present events now',
   Past: 'There are no future events now',
 };
-
 export const FILTERS = {
-  Everything: (point) => point,
-  Future: (point) => point.filter(({dateStart}) => new Date(dateStart) > now),
-  Present: (point) => point.filter(({dateStart, dateStop}) => new Date(dateStart) <= now && new Date(dateStop) >= now),
-  Past: (point) => point.filter(({dateStop}) => new Date(dateStop) < now),
+  'Everything': (routePoints) => routePoints,
+  'Future': (routePoints) => routePoints.filter(({dateStart}) => new Date(dateStart) > now),
+  'Present': (routePoints) => routePoints.filter(({
+    dateStart,
+    dateStop
+  }) => new Date(dateStart) <= now && new Date(dateStop) >= now),
+  'Past': (routePoints) => routePoints.filter(({dateStop}) => new Date(dateStop) < now),
 };
-
 export const SORTS = {
-  Day: ({routePoints}) => routePoints,
-  Event: false,
-  Time: ({routePoints}) => routePoints.sort((prev, next) => {
-    const _getMilliseconds = (date) => dayjs(date).valueOf();
-    const prevTime = _getMilliseconds(prev.dateStart);
-    const nextTime = _getMilliseconds(next.dateStart);
-    return prevTime - nextTime;
+  'Day': (routePoints) => routePoints.sort((prev, next) => dayjs(prev.dateStart).diff(dayjs(next.dateStart))),
+  'Event': false,
+  'Time': (routePoints) => routePoints.sort((prev, next) => {
+    const prevDuration = dayjs(prev.dateStop).diff(dayjs(prev.dateStart));
+    const nextDuration = dayjs(next.dateStop).diff(dayjs(next.dateStart));
+    return prevDuration - nextDuration;
   }),
-  Price: ({routePoints, offers}) => routePoints.sort((prev, next) => {
+  'Price': (routePoints, offers) => routePoints.sort((prev, next) => {
     const _getOffers = (allOffers, routePoint) => {
       const filteredOffers = allOffers.find((offer) => offer.type === routePoint.type).offers;
       return filteredOffers.filter(({id}) => routePoint.offers.includes(id));
@@ -48,7 +47,19 @@ export const SORTS = {
     const nextPrice = totalPrice(nextOffers, next.price);
     return prevPrice - nextPrice;
   }),
-  Offers: false
+  'Offers': false
 };
-
+export const UserAction = {
+  ADD_ROUTE_POINT: 'ADD_ROUTE_POINT',
+  UPDATE_ROUTE_POINT: 'UPDATE_ROUTE_POINT',
+  DELETE_ROUTE_POINT: 'DELETE_ROUTE_POINT',
+  SORT_ROUTE_POINTS: 'SORT_ROUTE_POINTS',
+  FILTER_ROUTE_POINTS: 'FILTER_ROUTE_POINTS',
+  SELECT_POINT: 'SELECT_POINT',
+};
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
 export const CURRENT_URL = window.location.href;

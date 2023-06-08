@@ -1,17 +1,17 @@
 import AbstractView from '../framework/view/abstract-view';
 import {FILTERS} from '../helpers/const';
+import {UserAction, UpdateType} from '../helpers/const';
 
-function createFilterTemplate(data) {
+function createFilterTemplate(routePoints, activeFilterType) {
   const filtersMakeup = Object.entries(FILTERS).map(([key, val]) => {
-    const isDisabled = val(data).length <= 0 ? ' disabled' : '';
-    const isChecked = key === 'Everything' ? ' checked' : '';
+    const isDisabled = val(routePoints).length <= 0 ? ' disabled' : '';
+    const isChecked = key === activeFilterType ? ' checked' : '';
     return `<div class="trip-filters__filter">
               <input id="filter-${key.toLowerCase()}" class="trip-filters__filter-input  visually-hidden" 
-              type="radio" name="trip-filter" value="${key.toLowerCase()}"${isChecked}${isDisabled}>
+              type="radio" name="trip-filter" data-filter-type="${key}"${isChecked}${isDisabled}>
               <label class="trip-filters__filter-label" for="filter-${key.toLowerCase()}">${key}</label>
             </div>`;
   });
-
   return `<form class="trip-filters" action="#" method="get">
             ${filtersMakeup.join('')}
             
@@ -20,23 +20,32 @@ function createFilterTemplate(data) {
 }
 
 export default class FilterView extends AbstractView {
-  #data = [];
-  #handleFilterChange = null;
+  #routePoints = null;
+  #activeFilterType = null;
+  #handleViewAction = null;
 
-  constructor(routePointsData, onFilterChange) {
+  constructor(routePoints, activeFilterType, onViewAction) {
     super();
-    this.#data = routePointsData;
-    this.#handleFilterChange = onFilterChange;
-    this.element
-      .addEventListener('submit', this.#filterChangeHandler);
+    this.#routePoints = routePoints;
+    this.#handleViewAction = onViewAction;
+    this.#activeFilterType = activeFilterType;
+    this.element.addEventListener('change', this.#filterChangeHandler);
   }
 
   get template() {
-    return createFilterTemplate(this.#data);
+    return createFilterTemplate(this.#routePoints, this.#activeFilterType);
   }
 
   #filterChangeHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFilterChange();
+    const filterType = evt.target?.dataset?.filterType;
+    if (!filterType) {
+      return;
+    }
+    this.#handleViewAction(
+      UserAction.FILTER_ROUTE_POINTS,
+      UpdateType.MINOR,
+      filterType
+    );
   };
 }
