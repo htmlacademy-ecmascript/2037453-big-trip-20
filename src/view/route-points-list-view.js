@@ -5,7 +5,6 @@ function createEventsListTemplate() {
 }
 
 export default class RoutePointsListView extends AbstractView {
-
   constructor() {
     super();
   }

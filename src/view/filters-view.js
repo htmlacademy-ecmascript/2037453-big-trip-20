@@ -12,7 +12,6 @@ function createFilterTemplate(routePoints, activeFilterType) {
               <label class="trip-filters__filter-label" for="filter-${key.toLowerCase()}">${key}</label>
             </div>`;
   });
-
   return `<form class="trip-filters" action="#" method="get">
             ${filtersMakeup.join('')}
             
@@ -40,7 +39,7 @@ export default class FilterView extends AbstractView {
   #filterChangeHandler = (evt) => {
     evt.preventDefault();
     const filterType = evt.target?.dataset?.filterType;
-    if(!filterType) {
+    if (!filterType) {
       return;
     }
     this.#handleViewAction(

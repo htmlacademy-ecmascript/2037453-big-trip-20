@@ -10,7 +10,6 @@ import RoutePointPresenter from '../presenter/route-point-presenter';
 import CreateFormPresenter from '../presenter/create-form-presenter';
 import {FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
 
-
 export default class ContentPresenter {
   #activeFilterType = Object.keys(FILTERS)[0];
   #activeSortType = Object.keys(SORTS)[0];
@@ -90,11 +89,9 @@ export default class ContentPresenter {
     remove(this.#routeListComponent);
     remove(this.#sortComponent);
     remove(this.#filterComponent);
-
     if (resetSortType) {
       this.#activeSortType = Object.keys(SORTS)[0];
     }
-
     if (resetFilterType) {
       this.#activeFilterType = Object.keys(FILTERS)[0];
     }
@@ -102,12 +99,10 @@ export default class ContentPresenter {
 
   #handleSetCurrentRoutePointId = (data) => {
     const id = data?.id || 0;
-
     if (this.#selectedRoutePointId === id) {
       this.#selectedRoutePointId = null;
       return;
     }
-
     if (this.#selectedRoutePointId !== null) {
       if (this.#selectedRoutePointId === 0) {
         this.#createFormPresenter.destroy();
@@ -115,7 +110,6 @@ export default class ContentPresenter {
         this.#routePointsList?.[this.#selectedRoutePointId]?.reset();
       }
     }
-
     this.#selectedRoutePointId = id;
   };
 

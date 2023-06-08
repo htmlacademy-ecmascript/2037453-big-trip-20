@@ -9,20 +9,16 @@ import {
   getDestinationById,
   getDestinationByName
 } from '../helpers/utils';
-
 function createDestinationTemplate(allDestinations, destination) {
   if (destination === null) {
     return '';
   }
-
   const {
     name = '',
     description = '',
     photos = []
   } = getDestinationById(allDestinations, destination);
-
   const eventPhotosListMarkup = photos.map((el) => (`<img class="event__photo" src="${el}" alt="Event photo">`));
-
   return `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">${name}</h3>
             <p class="event__destination-description">${description}</p>
@@ -31,11 +27,9 @@ function createDestinationTemplate(allDestinations, destination) {
             </div>                    
           </section>`;
 }
-
 function createOfferTemplate({id, title, price}, routePoint) {
   const type = routePoint.type.toLowerCase();
   const isChecked = routePoint.offers.includes(id) ? 'checked' : '';
-
   return `<div class="event__offer-selector">
             <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}-${routePoint.id}" type="checkbox" name="event-offer-${type}-${id}" value="${id}" ${isChecked}>
             <label class="event__offer-label" for="event-offer-${type}-${id}-${routePoint.id}">
@@ -45,29 +39,23 @@ function createOfferTemplate({id, title, price}, routePoint) {
             </label>
           </div>`;
 }
-
 function createTypeTemplate({type}, routePoint) {
   const isChecked = routePoint.type === type ? 'checked' : '';
   const value = type.toLowerCase();
-
   return `<div class="event__type-item">
             <input id="event-type-${value}-${routePoint.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}>
             <label class="event__type-label  event__type-label--${value}" for="event-type-${value}-${routePoint.id}">${type}</label>
           </div>`;
 }
-
 function createEditFormTemplate(routePoint, allOffers, allDestinations, isNewPoint) {
   const {id, dateStart, dateStop, type, offers, destination, price} = routePoint;
-
   const availableOffers = getOffersByType(allOffers, type);
   const destinationName = getDestinationById(allDestinations, destination)?.name || '';
-
   const typesListMarkup = allOffers.map((el) => createTypeTemplate(el, {id, type}));
   const eventOffersListMarkup = availableOffers.map((el) => createOfferTemplate(el, {id, type, offers}));
   const destinationsListMarkup = allDestinations.map((el) => (`<option value="${el.name}"></option>`));
   const rollUpButtonMarkup = isNewPoint ? '' : '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>';
   const secondaryButtonText = isNewPoint ? 'Cancel' : 'Delete';
-
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
               <header class="event__header">
@@ -123,7 +111,6 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations, isNewPoi
             </form>
           </li>`;
 }
-
 export default class EditFormView extends AbstractStatefulView {
   _state = null;
   #isNewPoint = false;
@@ -133,7 +120,6 @@ export default class EditFormView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleDeleteClick = null;
   #handleCloseClick = null;
-
   constructor({routePoint, offers, destinations, onFormSubmit, onCloseClick, onDeleteClick}) {
     super();
     if (!routePoint) {
@@ -182,35 +168,26 @@ export default class EditFormView extends AbstractStatefulView {
   #addListeners() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#FormSubmitHandler);
-
     this.element.querySelector('.event__rollup-btn')
       ?.addEventListener('click', this.#closeClickHandler);
-
     this.element.querySelector('.event__type-list')
       ?.addEventListener('change', this.#typeChangeHandler);
-
     this.element.querySelector('.event__input--destination')
       ?.addEventListener('change', this.#destinationChangeHandler);
-
     this.element.querySelector('.event__input--price')
       ?.addEventListener('input', this.#priceInputHandler);
-
     this.element.querySelector('.event__available-offers')
       ?.addEventListener('change', this.#offerChangeHandler);
-
     this.element.querySelector('.event__reset-btn')
       ?.addEventListener('click', this.#deleteClickHandler);
-
     const myInput = this.element.querySelectorAll('.event__input--time');
     const fp = flatpickr(myInput, {
       enableTime: true,
       'time_24hr': true,
       dateFormat: 'y/m/d H:i',
     });
-
     fp[0].set('maxDate', this._state.dateStop);
     fp[1].set('minDate', this._state.dateStart);
-
     fp[0].config.onChange.push((selectedDates) => {
       const dateStart = new Date(selectedDates).toISOString();
       this._setState({dateStart});

@@ -23,7 +23,6 @@ export default class SortView extends AbstractView {
     super();
     this.#handleViewAction = onViewAction;
     this.#activeSortType = activeSortType;
-
     this.element.addEventListener('change', this.#sortChangeHandler);
   }
 

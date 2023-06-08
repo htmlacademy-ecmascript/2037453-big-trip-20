@@ -1,13 +1,11 @@
 import {render, remove, RenderPosition} from '../framework/render';
 import EditFormView from '../view/edit-form-view';
 import {UserAction, UpdateType} from '../helpers/const';
-
 export default class CreateFormPresenter {
   #routeListContainer = null;
   #createFormComponent = null;
   #addRoutePointButton = null;
   #handleViewAction = null;
-
   constructor({routeListContainer, onViewAction}) {
     this.#routeListContainer = routeListContainer;
     this.#handleViewAction = onViewAction;
@@ -55,7 +53,7 @@ export default class CreateFormPresenter {
     this.#handleCloseCreateForm();
     this.#handleViewAction(
       UserAction.ADD_ROUTE_POINT,
-      UpdateType.MINOR,
+      UpdateType.MAJOR,
       routePoint
     );
   };

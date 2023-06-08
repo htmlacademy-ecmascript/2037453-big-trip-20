@@ -3,14 +3,12 @@ import RoutePointView from '../view/route-point-view';
 import EditFormView from '../view/edit-form-view';
 import {getOffersByType} from '../helpers/utils';
 import {UserAction, UpdateType} from '../helpers/const';
-
 export default class RoutePointPresenter {
   #routeListContainer = null;
   #routePointComponent = null;
   #editFormComponent = null;
   #routePoint = null;
   #handleViewAction = null;
-
   constructor({routeListContainer, onViewAction}) {
     this.#routeListContainer = routeListContainer;
     this.#handleViewAction = onViewAction;
@@ -21,7 +19,6 @@ export default class RoutePointPresenter {
     const prevEditFormComponent = this.#editFormComponent;
     const offersList = getOffersByType(offers, routePoint.type);
     this.#routePoint = routePoint;
-
     this.#editFormComponent = new EditFormView({
       routePoint,
       offers,
@@ -30,7 +27,6 @@ export default class RoutePointPresenter {
       onDeleteClick: this.#handleDeleteClick,
       onCloseClick: this.#handlerCloseClick,
     });
-
     this.#routePointComponent = new RoutePointView({
       routePoint,
       offersList,
@@ -38,20 +34,16 @@ export default class RoutePointPresenter {
       onEditClick: this.#handleEditClick,
       onFavoriteClick: this.#handleFavoriteClick
     });
-
     if (prevRoutePointComponent === null) {
       render(this.#routePointComponent, this.#routeListContainer);
       return;
     }
-
     if (this.#routeListContainer.contains(prevRoutePointComponent.element)) {
       replace(this.#routePointComponent, prevRoutePointComponent);
     }
-
     if (this.#routeListContainer.contains(prevEditFormComponent.element)) {
       replace(this.#editFormComponent, prevEditFormComponent);
     }
-
     remove(prevRoutePointComponent);
     remove(prevEditFormComponent);
   }
