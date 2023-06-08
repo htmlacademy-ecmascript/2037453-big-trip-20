@@ -29,13 +29,18 @@ export const FILTERS = {
 };
 
 export const SORTS = {
-  'Day': (routePoints) => routePoints,
-  'Event': false,
-  'Time': (routePoints) => routePoints.sort((prev, next) => {
+  'Day': (routePoints) => routePoints.sort((prev, next) => {
     const _getMilliseconds = (date) => dayjs(date).valueOf();
     const prevTime = _getMilliseconds(prev.dateStart);
     const nextTime = _getMilliseconds(next.dateStart);
     return prevTime - nextTime;
+  }),
+  'Event': false,
+  'Time': (routePoints) => routePoints.sort((prev, next) => {
+    const _getMilliseconds = (date) => dayjs(date).valueOf();
+    const prevDuration = _getMilliseconds(prev.dateStop) - _getMilliseconds(prev.dateStart);
+    const nextDuration = _getMilliseconds(next.dateStop) - _getMilliseconds(next.dateStart);
+    return prevDuration - nextDuration;
   }),
   'Price': (routePoints, offers) => routePoints.sort((prev, next) => {
     const _getOffers = (allOffers, routePoint) => {
