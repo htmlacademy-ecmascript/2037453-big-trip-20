@@ -143,6 +143,7 @@ export default class ContentPresenter {
         this.#routePointsModel.updateRoutePoint(updateType, update);
         break;
       case UserAction.DELETE_ROUTE_POINT:
+        // @todo Подумать, как запихнуть delete в PATCH
         this.#routePointsModel.deleteRoutePoint(updateType, update);
         break;
       case UserAction.SORT_ROUTE_POINTS:
