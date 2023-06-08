@@ -1,5 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import flatpickr from 'flatpickr';
+import {nanoid} from 'nanoid';
 import 'flatpickr/dist/flatpickr.css';
 import {ICONS} from '../helpers/const';
 import {
@@ -55,7 +56,7 @@ function createTypeTemplate({type}, routePoint) {
           </div>`;
 }
 
-function createEditFormTemplate(routePoint, allOffers, allDestinations) {
+function createEditFormTemplate(routePoint, allOffers, allDestinations, isNewPoint) {
   const {id, dateStart, dateStop, type, offers, destination, price} = routePoint;
 
   const availableOffers = getOffersByType(allOffers, type);
@@ -64,6 +65,8 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
   const typesListMarkup = allOffers.map((el) => createTypeTemplate(el, {id, type}));
   const eventOffersListMarkup = availableOffers.map((el) => createOfferTemplate(el, {id, type, offers}));
   const destinationsListMarkup = allDestinations.map((el) => (`<option value="${el.name}"></option>`));
+  const rollUpButtonMarkup = isNewPoint ? '' : '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>';
+  const secondaryButtonText = isNewPoint ? 'Cancel' : 'Delete';
 
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
@@ -85,7 +88,7 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
                   <label class="event__label  event__type-output" for="event-destination-${id}">
                     ${type}
                   </label>
-                  <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destinationName}" list="destination-list-${id}">
+                  <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destinationName}" list="destination-list-${id}" required>
                   <datalist id="destination-list-${id}">
                     ${destinationsListMarkup.join('')}
                   </datalist>
@@ -105,10 +108,8 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
                   <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}" pattern="[0-9]{1,}">
                 </div>
                 <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                <button class="event__reset-btn" type="reset">Delete</button>
-                <button class="event__rollup-btn" type="button">
-                  <span class="visually-hidden">Open event</span>
-                </button>
+                <button class="event__reset-btn" type="reset">${secondaryButtonText}</button>
+                ${rollUpButtonMarkup}
               </header>
               <section class="event__details">
                 <section class="event__section  event__section--offers">
@@ -125,27 +126,41 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
 
 export default class EditFormView extends AbstractStatefulView {
   _state = null;
+  #isNewPoint = false;
   #pointId = null;
   #offers = null;
   #destinations = null;
-  #handleSubmitClick = null;
+  #handleFormSubmit = null;
   #handleDeleteClick = null;
   #handleCloseClick = null;
 
-  constructor({routePoint, offers, destinations, onSubmitClick, onCloseClick, onDeleteClick}) {
+  constructor({routePoint, offers, destinations, onFormSubmit, onCloseClick, onDeleteClick}) {
     super();
-    this.#pointId = routePoint.id;
+    if (!routePoint) {
+      const now = new Date();
+      routePoint = {
+        id: nanoid(),
+        dateStart: now,
+        dateStop: now,
+        type: offers[0].type,
+        offers: [],
+        destination: null,
+        price: 0
+      };
+      this.#isNewPoint = true;
+    }
+    this.#pointId = routePoint?.id;
     this._setState(EditFormView.parseRoutePointToState(routePoint));
     this.#offers = offers;
     this.#destinations = destinations;
-    this.#handleSubmitClick = onSubmitClick;
+    this.#handleFormSubmit = onFormSubmit;
     this.#handleDeleteClick = onDeleteClick;
     this.#handleCloseClick = onCloseClick;
     this.#addListeners();
   }
 
   get template() {
-    return createEditFormTemplate(this._state, this.#offers, this.#destinations);
+    return createEditFormTemplate(this._state, this.#offers, this.#destinations, this.#isNewPoint);
   }
 
   _restoreHandlers() {
@@ -166,25 +181,25 @@ export default class EditFormView extends AbstractStatefulView {
 
   #addListeners() {
     this.element.querySelector('form')
-      .addEventListener('submit', this.#SubmitClickHandler);
+      .addEventListener('submit', this.#FormSubmitHandler);
 
     this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#closeClickHandler);
+      ?.addEventListener('click', this.#closeClickHandler);
 
     this.element.querySelector('.event__type-list')
-      .addEventListener('change', this.#typeChangeHandler);
+      ?.addEventListener('change', this.#typeChangeHandler);
 
     this.element.querySelector('.event__input--destination')
-      .addEventListener('change', this.#destinationChangeHandler);
+      ?.addEventListener('change', this.#destinationChangeHandler);
 
     this.element.querySelector('.event__input--price')
-      .addEventListener('input', this.#priceInputHandler);
+      ?.addEventListener('input', this.#priceInputHandler);
 
     this.element.querySelector('.event__available-offers')
-      .addEventListener('change', this.#offerChangeHandler);
+      ?.addEventListener('change', this.#offerChangeHandler);
 
     this.element.querySelector('.event__reset-btn')
-      .addEventListener('click', this.#deleteClickHandler);
+      ?.addEventListener('click', this.#deleteClickHandler);
 
     const myInput = this.element.querySelectorAll('.event__input--time');
     const fp = flatpickr(myInput, {
@@ -208,9 +223,9 @@ export default class EditFormView extends AbstractStatefulView {
     });
   }
 
-  #SubmitClickHandler = (evt) => {
+  #FormSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleSubmitClick(EditFormView.parseStateToRoutePoint(this._state));
+    this.#handleFormSubmit(EditFormView.parseStateToRoutePoint(this._state));
   };
 
   #closeClickHandler = (evt) => {

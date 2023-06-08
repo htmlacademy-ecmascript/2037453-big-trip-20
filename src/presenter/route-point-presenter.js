@@ -11,12 +11,12 @@ export default class RoutePointPresenter {
   #editFormComponent = null;
   #routePoint = null;
   #handleViewAction = null;
-  #handleRoutePointSelect = null;
+  // #handleRoutePointSelect = null;
 
   constructor({routeListContainer, onViewAction, onRoutePointSelect}) {
     this.#routeListContainer = routeListContainer;
     this.#handleViewAction = onViewAction;
-    this.#handleRoutePointSelect = onRoutePointSelect;
+    // this.#handleRoutePointSelect = onRoutePointSelect;
   }
 
   init(routePoint, offers, destinations) {
@@ -25,24 +25,11 @@ export default class RoutePointPresenter {
     const offersList = getOffersByType(offers, routePoint.type);
     this.#routePoint = routePoint;
 
-    // @todo Доработать во время реализации функционала формы добавления нового маршрута
-    // if (routePoint.id === null) {
-    //   this.#createFormComponent = new EditFormView({
-    //     routePoint,
-    //     offers,
-    //     destinations,
-    //     onFormSubmit: this.#handleCreateFormSubmit,
-    //     onCloseClick: this.#handlerCloseClick,
-    //   });
-    //   render(this.#createFormComponent, this.#routeListContainer);
-    //   return;
-    // }
-
     this.#editFormComponent = new EditFormView({
       routePoint,
       offers,
       destinations,
-      onSubmitClick: this.#handleEditFormSubmit,
+      onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick,
       onCloseClick: this.#handlerCloseClick,
     });
@@ -84,14 +71,22 @@ export default class RoutePointPresenter {
   #replacePointToForm() {
     replace(this.#editFormComponent, this.#routePointComponent);
     document.addEventListener('keydown', this.#escPressHandler);
-    this.#handleRoutePointSelect(this.#routePoint.id);
+    this.#handleViewAction(
+      UserAction.SELECT_POINT,
+      UpdateType.PATCH,
+      this.#routePoint
+    );
   }
 
   #replaceFormToPoint() {
     this.#editFormComponent.reset(this.#routePoint);
     replace(this.#routePointComponent, this.#editFormComponent);
     document.removeEventListener('keydown', this.#escPressHandler);
-    this.#handleRoutePointSelect(this.#routePoint.id);
+    this.#handleViewAction(
+      UserAction.SELECT_POINT,
+      UpdateType.PATCH,
+      this.#routePoint
+    );
   }
 
   #handleEditClick = () => {
@@ -117,10 +112,10 @@ export default class RoutePointPresenter {
     );
   };
 
-  #handleEditFormSubmit = (routePoint) => {
+  #handleFormSubmit = (routePoint) => {
     this.#handleViewAction(
       UserAction.UPDATE_ROUTE_POINT,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       routePoint
     );
     this.#replaceFormToPoint();
@@ -129,18 +124,8 @@ export default class RoutePointPresenter {
   #handleDeleteClick = (routePoint) => {
     this.#handleViewAction(
       UserAction.DELETE_ROUTE_POINT,
-      UpdateType.MAJOR,
+      UpdateType.MINOR,
       routePoint
     );
   };
-
-  // @todo Допилить, когда дойду до работы с rest api
-  // #handleCreateFormSubmit = (routePoint) => {
-  //   this.#handleViewAction(
-  //     UserAction.UPDATE_ROUTE_POINT,
-  //     UpdateType.MINOR,
-  //     routePoint
-  //   );
-  // this.#replaceFormToPoint();
-  // };
 }

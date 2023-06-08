@@ -1,4 +1,4 @@
-import {render, remove} from '../framework/render';
+import {render, remove, RenderPosition} from '../framework/render';
 import FilterView from '../view/filters-view';
 import SortView from '../view/sort-view';
 import RoutePointsListView from '../view/route-points-list-view';
@@ -7,7 +7,9 @@ import OffersModel from '../models/offers-model';
 import DestinationsModel from '../models/destinations-model';
 import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
+import CreateFormPresenter from '../presenter/create-form-presenter';
 import {FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
+
 
 export default class ContentPresenter {
   #activeFilterType = null;
@@ -25,6 +27,7 @@ export default class ContentPresenter {
   #destinationsData = null;
   #routePointsList = {};
   #selectedRoutePointId = null;
+  #createFormPresenter = null;
 
   constructor({filterContainer, contentContainer}) {
     this.#filterContainer = filterContainer;
@@ -53,26 +56,20 @@ export default class ContentPresenter {
     const routePoints = this.routePoints;
     this.#filterComponent = new FilterView(this.#routePointsModel.routePoints, this.#activeFilterType, this.#handleFilterChange);
     render(this.#filterComponent, this.#filterContainer);
+    this.#routeListComponent = new RoutePointsListView();
+    render(this.#routeListComponent, this.#contentContainer);
     if (routePoints.length <= 0) {
       this.#stubComponent = new StubView(this.#activeFilterType);
-      render(this.#stubComponent, this.#contentContainer);
+      render(this.#stubComponent, this.#routeListComponent.element);
     } else {
-      this.#sortComponent = new SortView(this.#activeSortType, this.#handleSortChange);
-      render(this.#sortComponent, this.#contentContainer);
-      this.#routeListComponent = new RoutePointsListView();
-      render(this.#routeListComponent, this.#contentContainer);
-
-      // @todo Доработать во время реализации функционала формы добавления нового маршрута
-      // this.#renderRoutePoint({
-      //   id: null,
-      //   dateStart: new Date().toISOString(),
-      //   dateStop: new Date().toISOString(),
-      //   type: getFirstType(this.#offersData),
-      //   destination: null,
-      //   offers: [],
-      //   price: 0
-      // });
+      this.#createFormPresenter = new CreateFormPresenter({
+        routeListContainer: this.#routeListComponent.element,
+        onViewAction: this.#handleViewAction,
+      });
+      this.#createFormPresenter.init(null, this.#offersData, this.#destinationsData);
       this.#renderRoutePoints(routePoints);
+      this.#sortComponent = new SortView(this.#activeSortType, this.#handleSortChange);
+      render(this.#sortComponent, this.#routeListComponent.element, RenderPosition.BEFOREBEGIN);
     }
   }
 
@@ -83,8 +80,7 @@ export default class ContentPresenter {
   #renderRoutePoint(routePoint) {
     const routePointPresenter = new RoutePointPresenter({
       routeListContainer: this.#routeListComponent.element,
-      onViewAction: this.#handleViewAction,
-      onRoutePointSelect: this.#handleRoutePointSelect
+      onViewAction: this.#handleViewAction
     });
     this.#routePointsList[routePoint.id] = routePointPresenter;
     routePointPresenter.init(routePoint, this.#offersData, this.#destinationsData);
@@ -106,21 +102,24 @@ export default class ContentPresenter {
     }
   }
 
+  #handleOpenEditForm = (data) => {
+    const id = data?.id || 0;
 
-  // @todo Переосмыслить запоминание редактируемой точки маршрута
-  #handleRoutePointSelect = (id) => {
     if (this.#selectedRoutePointId === id) {
       this.#selectedRoutePointId = null;
       return;
     }
 
     if (this.#selectedRoutePointId !== null) {
-      this.#routePointsList?.[this.#selectedRoutePointId]?.reset();
+      if (this.#selectedRoutePointId === 0) {
+        this.#createFormPresenter.destroy();
+      } else {
+        this.#routePointsList?.[this.#selectedRoutePointId]?.reset();
+      }
     }
 
     this.#selectedRoutePointId = id;
   };
-
 
   #handleSortChange = (sortType) => {
     this.#activeSortType = sortType;
@@ -134,23 +133,26 @@ export default class ContentPresenter {
     this.#renderContent();
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = (actionType, updateType, data) => {
     switch (actionType) {
       case UserAction.ADD_ROUTE_POINT:
-        this.#routePointsModel.addRoutePoint(updateType, update);
+        this.#routePointsModel.addRoutePoint(updateType, data);
         break;
       case UserAction.UPDATE_ROUTE_POINT:
-        this.#routePointsModel.updateRoutePoint(updateType, update);
+        this.#routePointsModel.updateRoutePoint(updateType, data);
         break;
       case UserAction.DELETE_ROUTE_POINT:
         // @todo Подумать, как запихнуть delete в PATCH
-        this.#routePointsModel.deleteRoutePoint(updateType, update);
+        this.#routePointsModel.deleteRoutePoint(updateType, data);
         break;
-      case UserAction.SORT_ROUTE_POINTS:
-        this.#routePointsModel.sortRoutePoints(updateType, update);
-        break;
-      case UserAction.FILTER_ROUTE_POINTS:
-        this.#routePointsModel.filterRoutePoints(updateType, update);
+      // case UserAction.SORT_ROUTE_POINTS:
+      //   this.#routePointsModel.sortRoutePoints(updateType, data);
+      //   break;
+      // case UserAction.FILTER_ROUTE_POINTS:
+      //   this.#routePointsModel.filterRoutePoints(updateType, data);
+      //   break;
+      case UserAction.SELECT_POINT:
+        this.#handleOpenEditForm(data);
         break;
     }
   };
