@@ -1,6 +1,6 @@
 [
   {
-    "type": "Taxi",
+    "type": "taxi",
     "offers": [
       {
         "id": 1,
@@ -10,7 +10,7 @@
     ]
   },
   {
-    "type": "Bus",
+    "type": "bus",
     "offers": [
       {
         "id": 1,
@@ -20,7 +20,7 @@
     ]
   },
   {
-    "type": "Train",
+    "type": "train",
     "offers": [
       {
         "id": 1,
@@ -30,7 +30,7 @@
     ]
   },
   {
-    "type": "Ship",
+    "type": "ship",
     "offers": [
       {
         "id": 1,
@@ -40,7 +40,7 @@
     ]
   },
   {
-    "type": "Drive",
+    "type": "drive",
     "offers": [
       {
         "id": 1,
@@ -50,7 +50,7 @@
     ]
   },
   {
-    "type": "Flight",
+    "type": "flight",
     "offers": [
       {
         "id": 1,
@@ -80,7 +80,7 @@
     ]
   },
   {
-    "type": "Check-In",
+    "type": "check-In",
     "offers": [
       {
         "id": 1,
@@ -90,7 +90,7 @@
     ]
   },
   {
-    "type": "Sightseeing",
+    "type": "sightseeing",
     "offers": [
       {
         "id": 1,
@@ -100,7 +100,7 @@
     ]
   },
   {
-    "type": "Restaurant",
+    "type": "restaurant",
     "offers": [
       {
         "id": 1,

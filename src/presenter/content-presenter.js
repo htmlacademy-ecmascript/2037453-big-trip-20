@@ -8,18 +8,24 @@ import DestinationsModel from '../models/destinations-model';
 import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
 import CreateFormPresenter from '../presenter/create-form-presenter';
-import {FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
+import {AUTORISATION, END_POINT, FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
+import RoutePointsApiService from '../route-points-api-service';
+import LoadingView from '../view/loading-view';
 
 export default class ContentPresenter {
   #activeFilterType = Object.keys(FILTERS)[0];
   #activeSortType = Object.keys(SORTS)[0];
-  #routePointsModel = new RoutePointsModel();
+  #routePointsModel = new RoutePointsModel({
+    routePointsApiService: new RoutePointsApiService(END_POINT, AUTORISATION)
+  });
+
   #offersModel = new OffersModel();
   #destinationsModel = new DestinationsModel();
   #filterComponent = null;
   #stubComponent = null;
   #sortComponent = null;
   #routeListComponent = null;
+  #loadingComponent = new LoadingView();
   #filterContainer = null;
   #contentContainer = null;
   #offersData = null;
@@ -28,6 +34,8 @@ export default class ContentPresenter {
   #selectedRoutePointId = null;
   #createFormPresenter = null;
   #noRoutePoints = false;
+  #isLoading = true;
+
 
   constructor({filterContainer, contentContainer}) {
     this.#filterContainer = filterContainer;
@@ -48,13 +56,23 @@ export default class ContentPresenter {
   }
 
   async init() {
+    this.#routePointsModel.init();
     this.#offersData = await this.#offersModel.offers;
     this.#destinationsData = await this.#destinationsModel.destinations;
     this.#renderContent();
   }
 
+  #renderLoading() {
+    render(this.#loadingComponent, this.#contentContainer);
+  }
+
   #renderContent() {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     const routePoints = this.routePoints;
+    console.log(routePoints)
     this.#filterComponent = new FilterView(this.#routePointsModel.routePoints, this.#activeFilterType, this.#handleViewAction);
     render(this.#filterComponent, this.#filterContainer);
     this.#routeListComponent = new RoutePointsListView();
@@ -91,6 +109,10 @@ export default class ContentPresenter {
     remove(this.#routeListComponent);
     remove(this.#sortComponent);
     remove(this.#filterComponent);
+    remove(this.#loadingComponent);
+    if (this.#noRoutePoints) {
+      remove(this.#stubComponent);
+    }
     if (resetSortType) {
       this.#activeSortType = Object.keys(SORTS)[0];
     }
@@ -151,6 +173,11 @@ export default class ContentPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearRoutePoints({resetSortType: true, resetFilterType: true});
+        this.#renderContent();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderContent();
         break;
     }

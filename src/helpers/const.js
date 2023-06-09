@@ -61,7 +61,10 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 export const CURRENT_URL = window.location.href;
 
-export const HASH = 'Basic 30816ecde53fcc40f0b93eb00148afe2';
+export const AUTORISATION = 'Basic 30816ecde53fcc40f0b93eb00148afe2';
+
+export const END_POINT = 'https://20.ecmascript.pages.academy/big-trip';
