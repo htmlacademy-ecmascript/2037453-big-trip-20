@@ -1,18 +1,25 @@
 import {render, remove, RenderPosition} from '../framework/render';
+import AddButtonView from '../view/add-button-view';
 import EditFormView from '../view/edit-form-view';
 import {UserAction, UpdateType} from '../helpers/const';
+
 export default class CreateFormPresenter {
+  #tripInfoContainer = null;
   #routeListContainer = null;
+  #addButtonComponent = null;
   #createFormComponent = null;
-  #addRoutePointButton = null;
   #handleViewAction = null;
-  constructor({routeListContainer, onViewAction}) {
+
+  constructor({tripInfoContainer, routeListContainer, onViewAction}) {
+    this.#tripInfoContainer = tripInfoContainer;
     this.#routeListContainer = routeListContainer;
     this.#handleViewAction = onViewAction;
-    this.#addRoutePointButton = document.querySelector('.trip-main__event-add-btn');
   }
 
   init(routePoint, offers, destinations) {
+    this.#addButtonComponent = new AddButtonView();
+    render(this.#addButtonComponent, this.#tripInfoContainer);
+    this.#addButtonComponent.element.addEventListener('click', this.#handleOpenCreateForm);
     this.#createFormComponent = new EditFormView({
       routePoint,
       offers,
@@ -20,16 +27,16 @@ export default class CreateFormPresenter {
       onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleCloseCreateForm
     });
-    this.#addRoutePointButton.addEventListener('click', this.#handleOpenCreateForm);
   }
 
   destroy() {
+    remove(this.#addButtonComponent);
     this.#handleCloseCreateForm();
   }
 
   #handleOpenCreateForm = (evt) => {
     evt.preventDefault();
-    this.#addRoutePointButton.setAttribute('disabled', '');
+    this.#addButtonComponent.element.setAttribute('disabled', '');
     this.#createFormComponent._restoreHandlers();
     render(this.#createFormComponent, this.#routeListContainer, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#escPressHandler);
@@ -40,7 +47,7 @@ export default class CreateFormPresenter {
   };
 
   #handleCloseCreateForm = () => {
-    this.#addRoutePointButton.removeAttribute('disabled');
+    this.#addButtonComponent.element.removeAttribute('disabled');
     remove(this.#createFormComponent);
     document.removeEventListener('keydown', this.#escPressHandler);
     this.#handleViewAction(
