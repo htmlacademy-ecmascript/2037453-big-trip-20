@@ -16,7 +16,7 @@ export default class RoutePointsApiService extends ApiService {
       .then(ApiService.parseResponse);
   }
 
-  async updateRoutePoints(routePoint) {
+  async updateRoutePoint(routePoint) {
     const response = await this._load({
       url: `points/${routePoint.id}`,
       method: 'PUT',

@@ -7,6 +7,7 @@ import {AUTORISATION, END_POINT} from './helpers/const';
 
 const filterContainer = document.querySelector('.trip-controls__filters');
 const contentContainer = document.querySelector('.trip-events');
+const tripInfoContainer = document.querySelector('.trip-main');
 
 const routePointsApiService = new RoutePointsApiService(END_POINT, AUTORISATION);
 const offersModel = new OffersModel(routePointsApiService);
@@ -18,6 +19,7 @@ const routePointsModel = new RoutePointsModel({
 });
 
 const contentPresenter = new ContentPresenter({
+  tripInfoContainer,
   filterContainer,
   contentContainer,
   routePointsModel,

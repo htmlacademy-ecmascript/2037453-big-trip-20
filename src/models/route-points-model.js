@@ -30,11 +30,12 @@ export default class RoutePointsModel extends Observable {
     return Object.values(this.#routePoints);
   }
 
-  updateRoutePoint(updateType, update) {
+  async updateRoutePoint(updateType, update) {
     const id = update?.id;
     if (!this.#routePoints?.[id]) {
       throw new Error('Can\'t update unexisting route point');
     }
+    await this.#routePointsApiService.updateRoutePoint(update);
     this.#routePoints[id] = update;
     this._notify(updateType, update);
   }
@@ -48,10 +49,11 @@ export default class RoutePointsModel extends Observable {
     this._notify(updateType, update);
   }
 
-  deleteRoutePoint(updateType, id) {
+  async deleteRoutePoint(updateType, id) {
     if (!this.#routePoints?.[id]) {
       throw new Error('Can\'t delete unexisting route point');
     }
+    await this.#routePointsApiService.deleteRoutePoint({id});
     delete this.#routePoints[id];
     this._notify(updateType, null);
   }
