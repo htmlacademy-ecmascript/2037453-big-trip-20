@@ -1,12 +1,17 @@
-import {CURRENT_URL} from '../helpers/const';
-
 export default class OffersModel {
+  #service = null;
   #data = null;
 
+  constructor(service) {
+    this.#service = service;
+  }
+
+  async init() {
+    console.log('Offers init')
+    this.#data = await this.#service.getOffers();
+  }
+
   get offers() {
-    this.#data = fetch(`${CURRENT_URL}mockdata/offers.json`)
-      .then((resp) => resp.json())
-      .catch();
     return this.#data;
   }
 }

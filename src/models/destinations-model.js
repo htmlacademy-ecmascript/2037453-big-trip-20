@@ -1,12 +1,17 @@
-import {CURRENT_URL} from '../helpers/const';
-
 export default class DestinationsModel {
+  #service = null;
   #data = null;
 
+  constructor(service) {
+    this.#service = service;
+  }
+
+  async init() {
+    console.log('Destinations init')
+    this.#data = await this.#service.getDestinations();
+  }
+
   get destinations() {
-    this.#data = fetch(`${CURRENT_URL}mockdata/destinations.json`)
-      .then((resp) => resp.json())
-      .catch();
     return this.#data;
   }
 }

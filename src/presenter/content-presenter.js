@@ -2,44 +2,45 @@ import {render, remove, RenderPosition} from '../framework/render';
 import FilterView from '../view/filters-view';
 import SortView from '../view/sort-view';
 import RoutePointsListView from '../view/route-points-list-view';
-import RoutePointsModel from '../models/route-points-model';
-import OffersModel from '../models/offers-model';
-import DestinationsModel from '../models/destinations-model';
 import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
 import CreateFormPresenter from '../presenter/create-form-presenter';
-import {AUTORISATION, END_POINT, FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
-import RoutePointsApiService from '../route-points-api-service';
+import {FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
 import LoadingView from '../view/loading-view';
 
 export default class ContentPresenter {
   #activeFilterType = Object.keys(FILTERS)[0];
   #activeSortType = Object.keys(SORTS)[0];
-  #routePointsModel = new RoutePointsModel({
-    routePointsApiService: new RoutePointsApiService(END_POINT, AUTORISATION)
-  });
+  #noRoutePoints = false;
+  #isLoading = true;
+  #selectedRoutePointId = null;
 
-  #offersModel = new OffersModel();
-  #destinationsModel = new DestinationsModel();
+  #routePointsModel = null;
+  #offersModel = null;
+  #destinationsModel = null;
+
+  #filterContainer = null;
+  #contentContainer = null;
+
   #filterComponent = null;
   #stubComponent = null;
   #sortComponent = null;
   #routeListComponent = null;
   #loadingComponent = new LoadingView();
-  #filterContainer = null;
-  #contentContainer = null;
+
   #offersData = null;
   #destinationsData = null;
   #routePointsList = {};
-  #selectedRoutePointId = null;
+
   #createFormPresenter = null;
-  #noRoutePoints = false;
-  #isLoading = true;
 
 
-  constructor({filterContainer, contentContainer}) {
+  constructor({filterContainer, contentContainer, routePointsModel, offersModel, destinationsModel}) {
     this.#filterContainer = filterContainer;
     this.#contentContainer = contentContainer;
+    this.#routePointsModel = routePointsModel;
+    this.#offersModel = offersModel;
+    this.#destinationsModel = destinationsModel;
     this.#routePointsModel.addObserver(this.#handleModelEvent);
   }
 
@@ -55,10 +56,8 @@ export default class ContentPresenter {
     return routePoints;
   }
 
-  async init() {
+  init() {
     this.#routePointsModel.init();
-    this.#offersData = await this.#offersModel.offers;
-    this.#destinationsData = await this.#destinationsModel.destinations;
     this.#renderContent();
   }
 
@@ -72,7 +71,8 @@ export default class ContentPresenter {
       return;
     }
     const routePoints = this.routePoints;
-    console.log(routePoints)
+    this.#offersData = this.#offersModel.offers;
+    this.#destinationsData = this.#destinationsModel.destinations;
     this.#filterComponent = new FilterView(this.#routePointsModel.routePoints, this.#activeFilterType, this.#handleViewAction);
     render(this.#filterComponent, this.#filterContainer);
     this.#routeListComponent = new RoutePointsListView();

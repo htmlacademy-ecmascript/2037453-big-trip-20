@@ -1,6 +1,16 @@
 import ApiService from './framework/api-service';
 
 export default class RoutePointsApiService extends ApiService {
+  getOffers() {
+    return this._load({url: 'offers'})
+      .then(ApiService.parseResponse);
+  }
+
+  getDestinations() {
+    return this._load({url: 'destinations'})
+      .then(ApiService.parseResponse);
+  }
+
   get routePoints() {
     return this._load({url: 'points'})
       .then(ApiService.parseResponse);
