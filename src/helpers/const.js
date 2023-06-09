@@ -63,3 +63,5 @@ export const UpdateType = {
   MAJOR: 'MAJOR',
 };
 export const CURRENT_URL = window.location.href;
+
+export const HASH = 'Basic 30816ecde53fcc40f0b93eb00148afe2';
