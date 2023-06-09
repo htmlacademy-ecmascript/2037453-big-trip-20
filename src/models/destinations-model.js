@@ -7,7 +7,6 @@ export default class DestinationsModel {
   }
 
   async init() {
-    console.log('Destinations init')
     this.#data = await this.#service.getDestinations();
   }
 

@@ -17,5 +17,11 @@ const routePointsModel = new RoutePointsModel({
   destinationsModel
 });
 
-const contentPresenter = new ContentPresenter({filterContainer, contentContainer, routePointsModel, offersModel, destinationsModel});
+const contentPresenter = new ContentPresenter({
+  filterContainer,
+  contentContainer,
+  routePointsModel,
+  offersModel,
+  destinationsModel
+});
 contentPresenter.init();

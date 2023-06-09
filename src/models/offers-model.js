@@ -7,7 +7,6 @@ export default class OffersModel {
   }
 
   async init() {
-    console.log('Offers init')
     this.#data = await this.#service.getOffers();
   }
 

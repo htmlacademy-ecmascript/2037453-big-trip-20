@@ -73,6 +73,7 @@ export default class ContentPresenter {
     const routePoints = this.routePoints;
     this.#offersData = this.#offersModel.offers;
     this.#destinationsData = this.#destinationsModel.destinations;
+    console.log(routePoints)
     this.#filterComponent = new FilterView(this.#routePointsModel.routePoints, this.#activeFilterType, this.#handleViewAction);
     render(this.#filterComponent, this.#filterContainer);
     this.#routeListComponent = new RoutePointsListView();
