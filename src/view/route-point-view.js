@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import {ICONS} from '../helpers/const';
+import {TYPE_ICONS} from '../helpers/const';
 import {
   routeDateFormat,
   dateFormat,
@@ -24,7 +24,7 @@ function createRoutePointTemplate({dateStart, dateStop, type, offers, destinatio
             <div class="event">
                 <time class="event__date" datetime="${dateFormat(dateStart)}">${routeDateFormat(dateStart)}</time>
                 <div class="event__type">
-                  <img class="event__type-icon" width="42" height="42" src="${ICONS[type]}" alt="Event type icon">
+                  <img class="event__type-icon" width="42" height="42" src="${TYPE_ICONS[type]}" alt="Event type icon">
                 </div>
                 <h3 class="event__title">${type} &minus; ${destination}</h3>
                 <div class="event__schedule">

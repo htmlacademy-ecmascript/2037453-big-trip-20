@@ -1,8 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import flatpickr from 'flatpickr';
-import {nanoid} from 'nanoid';
 import 'flatpickr/dist/flatpickr.css';
-import {ICONS} from '../helpers/const';
+import {TYPE_ICONS, TYPE_NAMES} from '../helpers/const';
 import {
   dateTimeFormat,
   getOffersByType,
@@ -41,10 +40,9 @@ function createOfferTemplate({id, title, price}, routePoint) {
 }
 function createTypeTemplate({type}, routePoint) {
   const isChecked = routePoint.type === type ? 'checked' : '';
-  const value = type.toLowerCase();
   return `<div class="event__type-item">
-            <input id="event-type-${value}-${routePoint.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}>
-            <label class="event__type-label  event__type-label--${value}" for="event-type-${value}-${routePoint.id}">${type}</label>
+            <input id="event-type-${type}-${routePoint.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}>
+            <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${routePoint.id}">${TYPE_NAMES[type]}</label>
           </div>`;
 }
 function createEditFormTemplate(routePoint, allOffers, allDestinations, isNewPoint) {
@@ -62,7 +60,7 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations, isNewPoi
                 <div class="event__type-wrapper">
                   <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
                     <span class="visually-hidden">Choose event type</span>
-                    <img class="event__type-icon" width="17" height="17" src="${ICONS[type]}" alt="Event type icon">
+                    <img class="event__type-icon" width="17" height="17" src="${TYPE_ICONS[type]}" alt="Event type icon">
                   </label>
                   <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
                   <div class="event__type-list">
