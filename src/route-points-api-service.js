@@ -50,7 +50,7 @@ export default class RoutePointsApiService extends ApiService {
   #adaptToServer(routePoint) {
     const adaptedRoutePoint = {
       ...routePoint,
-      'base_price': routePoint.price,
+      'base_price': +routePoint.price,
       'date_from': routePoint.dateStart,
       'date_to': routePoint.dateStop,
       'is_favorite': routePoint.isFavorite

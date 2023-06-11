@@ -30,6 +30,18 @@ export default class RoutePointsModel extends Observable {
     return Object.values(this.#routePoints);
   }
 
+  async addRoutePoint(updateType, update) {
+    try {
+      const response = await this.#routePointsApiService.addRoutePoint(update);
+      const actualId = response.id;
+      this.#routePoints[actualId] = this.#adaptToClient(response);
+    } catch (err) {
+      throw new Error('Can\'t add route point');
+    }
+
+    this._notify(updateType, update);
+  }
+
   async updateRoutePoint(updateType, update) {
     const id = update?.id;
     if (!this.#routePoints?.[id]) {
@@ -40,21 +52,6 @@ export default class RoutePointsModel extends Observable {
       this.#routePoints[id] = this.#adaptToClient(response);
     } catch (err) {
       throw new Error('Can\'t update route point');
-    }
-
-    this._notify(updateType, update);
-  }
-
-  async addRoutePoint(updateType, update) {
-    const id = update?.id;
-    if (this.#routePoints?.[id]) {
-      throw new Error('Can\'t add existing route point');
-    }
-    try {
-      const response = await this.#routePointsApiService.addRoutePoint(update);
-      this.#routePoints[id] = this.#adaptToClient(response);
-    } catch (err) {
-      throw new Error('Can\'t add route point');
     }
 
     this._notify(updateType, update);

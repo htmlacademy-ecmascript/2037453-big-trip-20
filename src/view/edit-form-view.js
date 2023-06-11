@@ -125,13 +125,14 @@ export default class EditFormView extends AbstractStatefulView {
     if (!routePoint) {
       const now = new Date();
       routePoint = {
-        id: nanoid(),
+        // id: nanoid(),
         dateStart: now,
         dateStop: now,
         type: offers[0].type,
         offers: [],
         destination: null,
-        price: 0
+        price: 0,
+        isFavorite: false
       };
       this.#isNewPoint = true;
     }
