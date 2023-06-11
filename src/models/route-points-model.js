@@ -57,12 +57,13 @@ export default class RoutePointsModel extends Observable {
     this._notify(updateType, update);
   }
 
-  async deleteRoutePoint(updateType, id) {
+  async deleteRoutePoint(updateType, update) {
+    const id = update?.id;
     if (!this.#routePoints?.[id]) {
       throw new Error('Can\'t delete unexisting route point');
     }
     try {
-      await this.#routePointsApiService.deleteRoutePoint({id});
+      await this.#routePointsApiService.deleteRoutePoint(update);
       delete this.#routePoints[id];
     } catch (err) {
       throw new Error('Can\'t delete route point');

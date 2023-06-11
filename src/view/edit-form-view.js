@@ -114,7 +114,7 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations, isNewPoi
 export default class EditFormView extends AbstractStatefulView {
   _state = null;
   #isNewPoint = false;
-  #pointId = null;
+  // #pointId = null;
   #offers = null;
   #destinations = null;
   #handleFormSubmit = null;
@@ -125,7 +125,6 @@ export default class EditFormView extends AbstractStatefulView {
     if (!routePoint) {
       const now = new Date();
       routePoint = {
-        // id: nanoid(),
         dateStart: now,
         dateStop: now,
         type: offers[0].type,
@@ -136,7 +135,7 @@ export default class EditFormView extends AbstractStatefulView {
       };
       this.#isNewPoint = true;
     }
-    this.#pointId = routePoint?.id;
+    // this.#pointId = routePoint?.id;
     this._setState(EditFormView.parseRoutePointToState(routePoint));
     this.#offers = offers;
     this.#destinations = destinations;
@@ -213,7 +212,7 @@ export default class EditFormView extends AbstractStatefulView {
 
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClick(this.#pointId);
+    this.#handleDeleteClick(EditFormView.parseStateToRoutePoint(this._state));
   };
 
   #typeChangeHandler = (evt) => {
