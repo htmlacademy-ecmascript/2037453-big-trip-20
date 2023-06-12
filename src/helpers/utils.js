@@ -5,6 +5,7 @@ const dateFormat = (date) => dayjs(date).format('YYYY-MM-DD');
 const timeFormat = (date) => dayjs(date).format('HH:mm');
 const dateISOFormat = (date) => dayjs(date).toISOString();
 const dateTimeFormat = (date) => dayjs(date).format('YY/MM/DD HH:mm');
+
 const durationFormat = (start, stop) => {
   const gap = dayjs(stop).diff(dayjs(start));
   let gapFormat = 'mm[m]';

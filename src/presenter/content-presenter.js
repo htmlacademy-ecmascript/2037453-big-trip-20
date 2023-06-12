@@ -3,6 +3,7 @@ import FilterView from '../view/filters-view';
 import SortView from '../view/sort-view';
 import RoutePointsListView from '../view/route-points-list-view';
 import StubView from '../view/stub-view';
+import TripInfoView from '../view/trip-info-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
 import CreateFormPresenter from '../presenter/create-form-presenter';
 import LoadingView from '../view/loading-view';
@@ -26,9 +27,11 @@ export default class ContentPresenter {
 
   #filterComponent = null;
   #stubComponent = null;
+  #tripInfoComponent = null;
   #sortComponent = null;
   #routeListComponent = null;
   #loadingComponent = new LoadingView();
+
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT,
@@ -87,20 +90,27 @@ export default class ContentPresenter {
     const routePoints = this.routePoints;
     this.#offersData = this.#offersModel.offers;
     this.#destinationsData = this.#destinationsModel.destinations;
+
     this.#filterComponent = new FilterView(this.#routePointsModel.routePoints, this.#activeFilterType, this.#handleViewAction);
     render(this.#filterComponent, this.#filterContainer);
+
     this.#routeListComponent = new RoutePointsListView();
     render(this.#routeListComponent, this.#contentContainer);
+
+    this.#createFormPresenter = new CreateFormPresenter({
+      tripInfoContainer: this.#tripInfoContainer,
+      routeListContainer: this.#routeListComponent.element,
+      onViewAction: this.#handleViewAction,
+    });
+    this.#createFormPresenter.init(this.#offersData, this.#destinationsData);
+
     if (routePoints.length <= 0) {
       this.#stubComponent = new StubView(this.#activeFilterType, this.#noRoutePoints);
       render(this.#stubComponent, this.#routeListComponent.element);
     } else {
-      this.#createFormPresenter = new CreateFormPresenter({
-        tripInfoContainer: this.#tripInfoContainer,
-        routeListContainer: this.#routeListComponent.element,
-        onViewAction: this.#handleViewAction,
-      });
-      this.#createFormPresenter.init(this.#offersData, this.#destinationsData);
+      this.#tripInfoComponent = new TripInfoView(routePoints, this.#offersData, this.#destinationsData);
+      render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
+
       this.#renderRoutePoints(routePoints);
       this.#sortComponent = new SortView(this.#activeSortType, this.#handleViewAction);
       render(this.#sortComponent, this.#routeListComponent.element, RenderPosition.BEFOREBEGIN);
@@ -128,6 +138,7 @@ export default class ContentPresenter {
     remove(this.#sortComponent);
     remove(this.#filterComponent);
     remove(this.#loadingComponent);
+    remove(this.#tripInfoComponent);
 
     if (this.#noRoutePoints) {
       remove(this.#stubComponent);
@@ -159,10 +170,10 @@ export default class ContentPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, data) => {
-    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.ADD_ROUTE_POINT:
         this.#createFormPresenter.setSaving();
+        this.#uiBlocker.block();
         try {
           await this.#routePointsModel.addRoutePoint(updateType, data);
         } catch (err) {
@@ -171,6 +182,7 @@ export default class ContentPresenter {
         break;
       case UserAction.UPDATE_ROUTE_POINT:
         this.#routePointsList[data.id].setSaving();
+        this.#uiBlocker.block();
         try {
           await this.#routePointsModel.updateRoutePoint(updateType, data);
         } catch (err) {
@@ -179,6 +191,7 @@ export default class ContentPresenter {
         break;
       case UserAction.DELETE_ROUTE_POINT:
         this.#routePointsList[data.id].setDeleting();
+        this.#uiBlocker.block();
         try {
           await this.#routePointsModel.deleteRoutePoint(updateType, data);
         } catch (err) {
