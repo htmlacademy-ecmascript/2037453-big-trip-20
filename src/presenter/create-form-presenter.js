@@ -1,7 +1,7 @@
 import {render, remove, RenderPosition} from '../framework/render';
 import AddButtonView from '../view/add-button-view';
 import EditFormView from '../view/edit-form-view';
-import {UserAction, UpdateType} from '../helpers/const';
+import {UserAction, UpdateType, Mode} from '../helpers/const';
 
 export default class CreateFormPresenter {
   #tripInfoContainer = null;
@@ -38,6 +38,18 @@ export default class CreateFormPresenter {
       isDisabled: true,
       isSaving: true
     });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#createFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#createFormComponent.shake(resetFormState);
   }
 
   #handleOpenCreateForm = () => {

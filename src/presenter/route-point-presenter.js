@@ -2,7 +2,7 @@ import {render, replace, remove} from '../framework/render';
 import RoutePointView from '../view/route-point-view';
 import EditFormView from '../view/edit-form-view';
 import {getOffersByType} from '../helpers/utils';
-import {UserAction, UpdateType} from '../helpers/const';
+import {UserAction, UpdateType, Mode} from '../helpers/const';
 
 export default class RoutePointPresenter {
   #routeListContainer = null;
@@ -13,6 +13,8 @@ export default class RoutePointPresenter {
   #routePoint = null;
 
   #handleViewAction = null;
+
+  #mode = Mode.DEFAULT;
 
   constructor({routeListContainer, onViewAction}) {
     this.#routeListContainer = routeListContainer;
@@ -63,20 +65,43 @@ export default class RoutePointPresenter {
   }
 
   setSaving() {
+    if (this.#mode === Mode.EDIT) {
+      this.#editFormComponent.updateElement({
+        isSaving: true,
+      });
+    }
+
     this.#editFormComponent.updateElement({
       isDisabled: true,
-      isSaving: true
     });
   }
 
   setDeleting() {
     this.#editFormComponent.updateElement({
       isDisabled: true,
-      isDeleting: true
+      isDeleting: true,
     });
   }
 
+  setAborting() {
+    const resetFormState = () => {
+      this.#editFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    if (this.#mode === Mode.DEFAULT) {
+      this.#routePointComponent.shake(resetFormState);
+      return;
+    }
+
+    this.#editFormComponent.shake(resetFormState);
+  }
+
   #replacePointToForm() {
+    this.#mode = Mode.EDIT;
     replace(this.#editFormComponent, this.#routePointComponent);
     document.addEventListener('keydown', this.#escPressHandler);
     this.#handleViewAction(
@@ -87,6 +112,7 @@ export default class RoutePointPresenter {
   }
 
   #replaceFormToPoint() {
+    this.#mode = Mode.DEFAULT;
     this.#editFormComponent.reset(this.#routePoint);
     replace(this.#routePointComponent, this.#editFormComponent);
     document.removeEventListener('keydown', this.#escPressHandler);

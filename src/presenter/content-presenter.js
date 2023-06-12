@@ -153,19 +153,31 @@ export default class ContentPresenter {
     this.#selectedRoutePointId = id;
   };
 
-  #handleViewAction = (actionType, updateType, data) => {
+  #handleViewAction = async (actionType, updateType, data) => {
     switch (actionType) {
       case UserAction.ADD_ROUTE_POINT:
         this.#createFormPresenter.setSaving();
-        this.#routePointsModel.addRoutePoint(updateType, data);
+        try {
+          await this.#routePointsModel.addRoutePoint(updateType, data);
+        } catch (err) {
+          this.#createFormPresenter.setAborting();
+        }
         break;
       case UserAction.UPDATE_ROUTE_POINT:
         this.#routePointsList[data.id].setSaving();
-        this.#routePointsModel.updateRoutePoint(updateType, data);
+        try {
+          await this.#routePointsModel.updateRoutePoint(updateType, data);
+        } catch (err) {
+          this.#routePointsList[data.id].setAborting();
+        }
         break;
       case UserAction.DELETE_ROUTE_POINT:
         this.#routePointsList[data.id].setDeleting();
-        this.#routePointsModel.deleteRoutePoint(updateType, data);
+        try {
+          await this.#routePointsModel.deleteRoutePoint(updateType, data);
+        } catch (err) {
+          this.#routePointsList[data.id].setAborting();
+        }
         break;
       case UserAction.SORT_ROUTE_POINTS:
         this.#activeSortType = data;

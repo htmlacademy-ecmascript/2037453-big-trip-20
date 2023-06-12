@@ -75,6 +75,12 @@ export const UpdateType = {
   INIT: 'INIT',
 };
 
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDIT: 'EDIT',
+  ADD: 'ADD',
+};
+
 export const AUTORISATION = 'Basic 30816ecde53fcc40f0b93eb00148afe2';
 
 export const END_POINT = 'https://20.ecmascript.pages.academy/big-trip';
