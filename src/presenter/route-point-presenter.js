@@ -6,9 +6,12 @@ import {UserAction, UpdateType} from '../helpers/const';
 
 export default class RoutePointPresenter {
   #routeListContainer = null;
+
   #routePointComponent = null;
   #editFormComponent = null;
+
   #routePoint = null;
+
   #handleViewAction = null;
 
   constructor({routeListContainer, onViewAction}) {
