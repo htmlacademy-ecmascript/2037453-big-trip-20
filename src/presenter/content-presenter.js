@@ -6,7 +6,8 @@ import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
 import CreateFormPresenter from '../presenter/create-form-presenter';
 import LoadingView from '../view/loading-view';
-import {FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
+import {FILTERS, SORTS, UpdateType, UserAction, TimeLimit} from '../helpers/const';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 
 export default class ContentPresenter {
   #activeFilterType = Object.keys(FILTERS)[0];
@@ -28,6 +29,10 @@ export default class ContentPresenter {
   #sortComponent = null;
   #routeListComponent = null;
   #loadingComponent = new LoadingView();
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT,
+  });
 
   #offersData = null;
   #destinationsData = null;
@@ -95,7 +100,7 @@ export default class ContentPresenter {
         routeListContainer: this.#routeListComponent.element,
         onViewAction: this.#handleViewAction,
       });
-      this.#createFormPresenter.init(null, this.#offersData, this.#destinationsData);
+      this.#createFormPresenter.init(this.#offersData, this.#destinationsData);
       this.#renderRoutePoints(routePoints);
       this.#sortComponent = new SortView(this.#activeSortType, this.#handleViewAction);
       render(this.#sortComponent, this.#routeListComponent.element, RenderPosition.BEFOREBEGIN);
@@ -153,16 +158,32 @@ export default class ContentPresenter {
     this.#selectedRoutePointId = id;
   };
 
-  #handleViewAction = (actionType, updateType, data) => {
+  #handleViewAction = async (actionType, updateType, data) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.ADD_ROUTE_POINT:
-        this.#routePointsModel.addRoutePoint(updateType, data);
+        this.#createFormPresenter.setSaving();
+        try {
+          await this.#routePointsModel.addRoutePoint(updateType, data);
+        } catch (err) {
+          this.#createFormPresenter.setAborting();
+        }
         break;
       case UserAction.UPDATE_ROUTE_POINT:
-        this.#routePointsModel.updateRoutePoint(updateType, data);
+        this.#routePointsList[data.id].setSaving();
+        try {
+          await this.#routePointsModel.updateRoutePoint(updateType, data);
+        } catch (err) {
+          this.#routePointsList[data.id].setAborting();
+        }
         break;
       case UserAction.DELETE_ROUTE_POINT:
-        this.#routePointsModel.deleteRoutePoint(updateType, data);
+        this.#routePointsList[data.id].setDeleting();
+        try {
+          await this.#routePointsModel.deleteRoutePoint(updateType, data);
+        } catch (err) {
+          this.#routePointsList[data.id].setAborting();
+        }
         break;
       case UserAction.SORT_ROUTE_POINTS:
         this.#activeSortType = data;
@@ -176,6 +197,7 @@ export default class ContentPresenter {
         this.#handleSetCurrentRoutePointId(data);
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {

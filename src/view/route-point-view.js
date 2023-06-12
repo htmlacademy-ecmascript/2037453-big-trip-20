@@ -1,5 +1,5 @@
-import AbstractView from '../framework/view/abstract-view';
-import {ICONS} from '../helpers/const';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
+import {TYPE_ICONS} from '../helpers/const';
 import {
   routeDateFormat,
   dateFormat,
@@ -18,13 +18,13 @@ function createOfferTemplate({title, price}) {
           </li>`;
 }
 
-function createRoutePointTemplate({dateStart, dateStop, type, offers, destination, isFavorite, price}) {
+function createRoutePointTemplate({dateStart, dateStop, type, isFavorite, price}, offers, destination) {
   const offersListMarkup = offers.map((el) => createOfferTemplate(el));
   return `<li class="trip-events__item">
             <div class="event">
                 <time class="event__date" datetime="${dateFormat(dateStart)}">${routeDateFormat(dateStart)}</time>
                 <div class="event__type">
-                  <img class="event__type-icon" width="42" height="42" src="${ICONS[type]}" alt="Event type icon">
+                  <img class="event__type-icon" width="42" height="42" src="${TYPE_ICONS[type]}" alt="Event type icon">
                 </div>
                 <h3 class="event__title">${type} &minus; ${destination}</h3>
                 <div class="event__schedule">
@@ -53,26 +53,44 @@ function createRoutePointTemplate({dateStart, dateStop, type, offers, destinatio
           </li>`;
 }
 
-export default class RoutePointView extends AbstractView {
-  #data = {};
+export default class RoutePointView extends AbstractStatefulView {
+  _state = null;
+  #offers = null;
+  #destinations = null;
   #handleEditClick = null;
   #handleFavoriteClick = null;
 
   constructor({routePoint, offersList, destinations, onEditClick, onFavoriteClick}) {
     super();
-    const destination = getDestinationById(destinations, routePoint.destination)?.name || '';
-    const routePointOffers = offersList.filter((el) => routePoint.offers.includes(el.id));
-    this.#data = {...routePoint, offers: routePointOffers, destination};
+    this._setState(RoutePointView.parseRoutePointToState(routePoint));
+    this.#offers = offersList.filter((el) => routePoint.offers.includes(el.id));
+    this.#destinations = getDestinationById(destinations, routePoint.destination)?.name || '';
     this.#handleEditClick = onEditClick;
     this.#handleFavoriteClick = onFavoriteClick;
+    this.#addListeners();
+  }
+
+  get template() {
+    return createRoutePointTemplate(this._state, this.#offers, this.#destinations);
+  }
+
+  _restoreHandlers() {
+    this.#addListeners();
+  }
+
+  static parseRoutePointToState(routePoint) {
+    return {...routePoint};
+  }
+
+  static parseStateToRoutePoint(state) {
+    return {...state};
+  }
+
+  #addListeners() {
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#editClickHandler);
     this.element.querySelector('.event__favorite-btn')
       .addEventListener('click', this.#favoriteClickHandler);
-  }
-
-  get template() {
-    return createRoutePointTemplate(this.#data);
   }
 
   #editClickHandler = (evt) => {
@@ -82,6 +100,6 @@ export default class RoutePointView extends AbstractView {
 
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFavoriteClick();
+    this.#handleFavoriteClick(RoutePointView.parseStateToRoutePoint(this._state));
   };
 }

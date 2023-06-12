@@ -6,8 +6,13 @@ import {UserAction, UpdateType} from '../helpers/const';
 export default class CreateFormPresenter {
   #tripInfoContainer = null;
   #routeListContainer = null;
+
   #addButtonComponent = null;
   #createFormComponent = null;
+
+  #offers = null;
+  #destinations = null;
+
   #handleViewAction = null;
 
   constructor({tripInfoContainer, routeListContainer, onViewAction}) {
@@ -16,17 +21,11 @@ export default class CreateFormPresenter {
     this.#handleViewAction = onViewAction;
   }
 
-  init(routePoint, offers, destinations) {
-    this.#addButtonComponent = new AddButtonView();
+  init(offers, destinations) {
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#addButtonComponent = new AddButtonView({onAddClick: this.#handleOpenCreateForm});
     render(this.#addButtonComponent, this.#tripInfoContainer);
-    this.#addButtonComponent.element.addEventListener('click', this.#handleOpenCreateForm);
-    this.#createFormComponent = new EditFormView({
-      routePoint,
-      offers,
-      destinations,
-      onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleCloseCreateForm
-    });
   }
 
   destroy() {
@@ -34,30 +33,52 @@ export default class CreateFormPresenter {
     this.#handleCloseCreateForm();
   }
 
-  #handleOpenCreateForm = (evt) => {
-    evt.preventDefault();
-    this.#addButtonComponent.element.setAttribute('disabled', '');
+  setSaving() {
+    this.#createFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#createFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#createFormComponent.shake(resetFormState);
+  }
+
+  #handleOpenCreateForm = () => {
+    this.#createFormComponent = new EditFormView({
+      offers: this.#offers,
+      destinations: this.#destinations,
+      onFormSubmit: this.#handleFormSubmit,
+      onResetClick: this.#handleCloseCreateForm
+    });
+    this.#addButtonComponent.updateElement({
+      isDisabled: true
+    });
+    this.#createFormComponent.updateElement({
+      isNewPoint: true
+    });
     this.#createFormComponent._restoreHandlers();
     render(this.#createFormComponent, this.#routeListContainer, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#escPressHandler);
-    this.#handleViewAction(
-      UserAction.SELECT_POINT,
-      UpdateType.PATCH
-    );
   };
 
   #handleCloseCreateForm = () => {
-    this.#addButtonComponent.element.removeAttribute('disabled');
+    this.#addButtonComponent.updateElement({
+      isDisabled: false
+    });
     remove(this.#createFormComponent);
     document.removeEventListener('keydown', this.#escPressHandler);
-    this.#handleViewAction(
-      UserAction.SELECT_POINT,
-      UpdateType.PATCH
-    );
   };
 
   #handleFormSubmit = (routePoint) => {
-    this.#handleCloseCreateForm();
     this.#handleViewAction(
       UserAction.ADD_ROUTE_POINT,
       UpdateType.MAJOR,

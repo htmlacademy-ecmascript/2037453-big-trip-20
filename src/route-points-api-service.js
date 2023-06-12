@@ -16,17 +16,6 @@ export default class RoutePointsApiService extends ApiService {
       .then(ApiService.parseResponse);
   }
 
-  async updateRoutePoint(routePoint) {
-    const response = await this._load({
-      url: `points/${routePoint.id}`,
-      method: 'PUT',
-      body: JSON.stringify(this.#adaptToServer(routePoint)),
-      headers: new Headers({'Content-type': 'application/json'})
-    });
-
-    return await ApiService.parseResponse(response);
-  }
-
   async addRoutePoint(routePoint) {
     const response = await this._load({
       url: 'points',
@@ -38,19 +27,28 @@ export default class RoutePointsApiService extends ApiService {
     return await ApiService.parseResponse(response);
   }
 
-  async deleteRoutePoint(routePoint) {
+  async updateRoutePoint(routePoint) {
     const response = await this._load({
       url: `points/${routePoint.id}`,
-      method: 'DELETE'
+      method: 'PUT',
+      body: JSON.stringify(this.#adaptToServer(routePoint)),
+      headers: new Headers({'Content-type': 'application/json'})
     });
 
     return await ApiService.parseResponse(response);
   }
 
+  async deleteRoutePoint(routePoint) {
+    return await this._load({
+      url: `points/${routePoint.id}`,
+      method: 'DELETE'
+    });
+  }
+
   #adaptToServer(routePoint) {
     const adaptedRoutePoint = {
       ...routePoint,
-      'base_price': routePoint.price,
+      'base_price': +routePoint.price,
       'date_from': routePoint.dateStart,
       'date_to': routePoint.dateStop,
       'is_favorite': routePoint.isFavorite
