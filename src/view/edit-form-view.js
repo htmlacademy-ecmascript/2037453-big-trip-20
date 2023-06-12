@@ -121,7 +121,7 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
                     <span class="visually-hidden">Price</span>
                     &euro;
                   </label>
-                  <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}" pattern="[0-9]{1,}"${isDisabled}>
+                  <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${price}" min="1"${isDisabled} required>
                 </div>
                 <button class="event__save-btn  btn  btn--blue" type="submit"${isDisabled}>${saveButtonText}</button>
                 <button class="event__reset-btn" type="reset"${isDisabled}>${resetButtonText}</button>
@@ -160,7 +160,7 @@ export default class EditFormView extends AbstractStatefulView {
         type: offers[0].type,
         offers: [],
         destination: null,
-        price: 0,
+        price: null,
         isFavorite: false,
         isNewPoint: true
       });

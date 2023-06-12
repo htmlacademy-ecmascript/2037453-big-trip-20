@@ -79,7 +79,6 @@ export default class CreateFormPresenter {
   };
 
   #handleFormSubmit = (routePoint) => {
-    this.#handleCloseCreateForm();
     this.#handleViewAction(
       UserAction.ADD_ROUTE_POINT,
       UpdateType.MAJOR,
