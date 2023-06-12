@@ -112,7 +112,6 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations, isNewPoi
 export default class EditFormView extends AbstractStatefulView {
   _state = null;
   #isNewPoint = false;
-  // #pointId = null;
   #offers = null;
   #destinations = null;
   #handleFormSubmit = null;
@@ -133,7 +132,6 @@ export default class EditFormView extends AbstractStatefulView {
       };
       this.#isNewPoint = true;
     }
-    // this.#pointId = routePoint?.id;
     this._setState(EditFormView.parseRoutePointToState(routePoint));
     this.#offers = offers;
     this.#destinations = destinations;
