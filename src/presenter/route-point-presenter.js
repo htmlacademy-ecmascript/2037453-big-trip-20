@@ -57,6 +57,20 @@ export default class RoutePointPresenter {
     this.#replaceFormToPoint();
   }
 
+  setSaving() {
+    this.#editFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setDeleting() {
+    this.#editFormComponent.updateElement({
+      isDisabled: true,
+      isDeleting: true
+    });
+  }
+
   #replacePointToForm() {
     replace(this.#editFormComponent, this.#routePointComponent);
     document.addEventListener('keydown', this.#escPressHandler);
@@ -107,7 +121,6 @@ export default class RoutePointPresenter {
       UpdateType.MINOR,
       routePoint
     );
-    this.#replaceFormToPoint();
   };
 
   #handleDeleteClick = (routePoint) => {

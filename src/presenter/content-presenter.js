@@ -95,7 +95,7 @@ export default class ContentPresenter {
         routeListContainer: this.#routeListComponent.element,
         onViewAction: this.#handleViewAction,
       });
-      this.#createFormPresenter.init(null, this.#offersData, this.#destinationsData);
+      this.#createFormPresenter.init(this.#offersData, this.#destinationsData);
       this.#renderRoutePoints(routePoints);
       this.#sortComponent = new SortView(this.#activeSortType, this.#handleViewAction);
       render(this.#sortComponent, this.#routeListComponent.element, RenderPosition.BEFOREBEGIN);
@@ -156,12 +156,15 @@ export default class ContentPresenter {
   #handleViewAction = (actionType, updateType, data) => {
     switch (actionType) {
       case UserAction.ADD_ROUTE_POINT:
+        this.#createFormPresenter.setSaving();
         this.#routePointsModel.addRoutePoint(updateType, data);
         break;
       case UserAction.UPDATE_ROUTE_POINT:
+        this.#routePointsList[data.id].setSaving();
         this.#routePointsModel.updateRoutePoint(updateType, data);
         break;
       case UserAction.DELETE_ROUTE_POINT:
+        this.#routePointsList[data.id].setDeleting();
         this.#routePointsModel.deleteRoutePoint(updateType, data);
         break;
       case UserAction.SORT_ROUTE_POINTS:
