@@ -45,7 +45,7 @@ export default class CreateFormPresenter {
       offers: this.#offers,
       destinations: this.#destinations,
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleCloseCreateForm
+      onResetClick: this.#handleCloseCreateForm
     });
     this.#addButtonComponent.updateElement({
       isDisabled: true

@@ -32,7 +32,7 @@ function createOfferTemplate({id, title, price}, routePoint, isDisabled) {
   const type = routePoint.type.toLowerCase();
   const isChecked = routePoint.offers.includes(id) ? 'checked' : '';
   return `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}-${routePoint.id}" type="checkbox" name="event-offer-${type}-${id}" value="${id}" ${isChecked} ${isDisabled ? 'disabled' : ''}>
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}-${routePoint.id}" type="checkbox" name="event-offer-${type}-${id}" value="${id}" ${isChecked}${isDisabled}>
             <label class="event__offer-label" for="event-offer-${type}-${id}-${routePoint.id}">
               <span class="event__offer-title">${title}</span>
               &plus;&euro;&nbsp;
@@ -44,7 +44,7 @@ function createOfferTemplate({id, title, price}, routePoint, isDisabled) {
 function createTypeTemplate({type}, routePoint, isDisabled) {
   const isChecked = routePoint.type === type ? 'checked' : '';
   return `<div class="event__type-item">
-            <input id="event-type-${type}-${routePoint.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked} ${isDisabled ? 'disabled' : ''}>
+            <input id="event-type-${type}-${routePoint.id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isChecked}${isDisabled}>
             <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${routePoint.id}">${TYPE_NAMES[type]}</label>
           </div>`;
 }
@@ -58,21 +58,32 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
     offers,
     destination,
     price,
-    isDisabled,
     isSaving,
     isDeleting,
     isNewPoint
   } = routePoint;
+
+  const isDisabled = routePoint.isDisabled
+    ? ' disabled'
+    : '';
+  const saveButtonText = isSaving
+    ? 'Saving...'
+    : 'Save';
+  let resetButtonText = isDeleting
+    ? 'Deleting...'
+    : 'Delete';
+
+  if(isNewPoint) {
+    resetButtonText = 'Cancel';
+  }
+
   const availableOffers = getOffersByType(allOffers, type);
   const destinationName = getDestinationById(allDestinations, destination)?.name || '';
   const typesListMarkup = allOffers.map((el) => createTypeTemplate(el, {id, type}, isDisabled));
   const eventOffersListMarkup = availableOffers.map((el) => createOfferTemplate(el, {id, type, offers}, isDisabled));
   const destinationsListMarkup = allDestinations.map((el) => (`<option value="${el.name}"></option>`));
-  const rollUpButtonMarkup = isNewPoint ? '' : `<button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}><span class="visually-hidden">Open event</span></button>`;
-  let secondaryButtonText = isDeleting ? 'Deleting...' : 'Delete';
-  if (isNewPoint) {
-    secondaryButtonText = 'Cancel';
-  }
+  const rollUpButtonMarkup = isNewPoint ? '' : `<button class="event__rollup-btn" type="button"${isDisabled}><span class="visually-hidden">Open event</span></button>`;
+
   return `<li class="trip-events__item">
             <form class="event event--edit" action="#" method="post">
               <header class="event__header">
@@ -81,7 +92,7 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
                     <span class="visually-hidden">Choose event type</span>
                     <img class="event__type-icon" width="17" height="17" src="${TYPE_ICONS[type]}" alt="Event type icon">
                   </label>
-                  <input class="event__type-toggle visually-hidden" id="event-type-toggle-${id}" type="checkbox" ${isDisabled ? 'disabled' : ''}>
+                  <input class="event__type-toggle visually-hidden" id="event-type-toggle-${id}" type="checkbox"${isDisabled}>
                   <div class="event__type-list">
                     <fieldset class="event__type-group">
                       <legend class="visually-hidden">Event type</legend>
@@ -93,27 +104,27 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
                   <label class="event__label  event__type-output" for="event-destination-${id}">
                     ${type}
                   </label>
-                  <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destinationName}" list="destination-list-${id}" ${isDisabled ? 'disabled' : ''} required>
+                  <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destinationName}" list="destination-list-${id}"${isDisabled} required>
                   <datalist id="destination-list-${id}">
                     ${destinationsListMarkup.join('')}
                   </datalist>
                 </div>
                 <div class="event__field-group  event__field-group--time">
                   <label class="visually-hidden" for="event-start-time-${id}">From</label>
-                  <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dateTimeFormat(dateStart)}" ${isDisabled ? 'disabled' : ''}>
+                  <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dateTimeFormat(dateStart)}"${isDisabled}>
                   &mdash;
                   <label class="visually-hidden" for="event-end-time-${id}">To</label>
-                  <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dateTimeFormat(dateStop)}" ${isDisabled ? 'disabled' : ''}>
+                  <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dateTimeFormat(dateStop)}"${isDisabled}>
                 </div>
                 <div class="event__field-group  event__field-group--price">
                   <label class="event__label" for="event-price-${id}">
                     <span class="visually-hidden">Price</span>
                     &euro;
                   </label>
-                  <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}" pattern="[0-9]{1,}" ${isDisabled ? 'disabled' : ''}>
+                  <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}" pattern="[0-9]{1,}"${isDisabled}>
                 </div>
-                <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-                <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${secondaryButtonText}</button>
+                <button class="event__save-btn  btn  btn--blue" type="submit"${isDisabled}>${saveButtonText}</button>
+                <button class="event__reset-btn" type="reset"${isDisabled}>${resetButtonText}</button>
                 ${rollUpButtonMarkup}
               </header>
               <section class="event__details">
@@ -135,10 +146,10 @@ export default class EditFormView extends AbstractStatefulView {
   #offers = null;
   #destinations = null;
   #handleFormSubmit = null;
-  #handleDeleteClick = null;
+  #handleResetClick = null;
   #handleCloseClick = null;
 
-  constructor({routePoint, offers, destinations, onFormSubmit, onCloseClick, onDeleteClick}) {
+  constructor({routePoint, offers, destinations, onFormSubmit, onCloseClick, onResetClick}) {
     super();
     this._setState(EditFormView.parseRoutePointToState(routePoint));
     if (!routePoint) {
@@ -157,17 +168,13 @@ export default class EditFormView extends AbstractStatefulView {
     this.#offers = offers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
-    this.#handleDeleteClick = onDeleteClick;
+    this.#handleResetClick = onResetClick;
     this.#handleCloseClick = onCloseClick;
     this.#addListeners();
   }
 
   get template() {
     return createEditFormTemplate(this._state, this.#offers, this.#destinations, this.#isNewPoint);
-  }
-
-  _restoreHandlers() {
-    this.#addListeners();
   }
 
   static parseRoutePointToState(routePoint) {
@@ -191,13 +198,17 @@ export default class EditFormView extends AbstractStatefulView {
     return routePoint;
   }
 
+  _restoreHandlers() {
+    this.#addListeners();
+  }
+
   reset(routePoint) {
     this.updateElement(EditFormView.parseRoutePointToState(routePoint));
   }
 
   #addListeners() {
     this.element.querySelector('form')
-      .addEventListener('submit', this.#FormSubmitHandler);
+      .addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__rollup-btn')
       ?.addEventListener('click', this.#closeClickHandler);
     this.element.querySelector('.event__type-list')
@@ -209,8 +220,9 @@ export default class EditFormView extends AbstractStatefulView {
     this.element.querySelector('.event__available-offers')
       ?.addEventListener('change', this.#offerChangeHandler);
     this.element.querySelector('.event__reset-btn')
-      ?.addEventListener('click', this.#deleteClickHandler);
+      ?.addEventListener('click', this.#resetClickHandler);
     const myInput = this.element.querySelectorAll('.event__input--time');
+
     const fp = flatpickr(myInput, {
       enableTime: true,
       'time_24hr': true,
@@ -230,7 +242,7 @@ export default class EditFormView extends AbstractStatefulView {
     });
   }
 
-  #FormSubmitHandler = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleFormSubmit(EditFormView.parseStateToRoutePoint(this._state));
   };
@@ -240,9 +252,9 @@ export default class EditFormView extends AbstractStatefulView {
     this.#handleCloseClick();
   };
 
-  #deleteClickHandler = (evt) => {
+  #resetClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleDeleteClick(EditFormView.parseStateToRoutePoint(this._state));
+    this.#handleResetClick(EditFormView.parseStateToRoutePoint(this._state));
   };
 
   #typeChangeHandler = (evt) => {

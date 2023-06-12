@@ -3,12 +3,14 @@ import RoutePointView from '../view/route-point-view';
 import EditFormView from '../view/edit-form-view';
 import {getOffersByType} from '../helpers/utils';
 import {UserAction, UpdateType} from '../helpers/const';
+
 export default class RoutePointPresenter {
   #routeListContainer = null;
   #routePointComponent = null;
   #editFormComponent = null;
   #routePoint = null;
   #handleViewAction = null;
+
   constructor({routeListContainer, onViewAction}) {
     this.#routeListContainer = routeListContainer;
     this.#handleViewAction = onViewAction;
@@ -24,7 +26,7 @@ export default class RoutePointPresenter {
       offers,
       destinations,
       onFormSubmit: this.#handleFormSubmit,
-      onDeleteClick: this.#handleDeleteClick,
+      onResetClick: this.#handleDeleteClick,
       onCloseClick: this.#handlerCloseClick,
     });
     this.#routePointComponent = new RoutePointView({
