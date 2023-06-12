@@ -6,7 +6,8 @@ import StubView from '../view/stub-view';
 import RoutePointPresenter from '../presenter/route-point-presenter';
 import CreateFormPresenter from '../presenter/create-form-presenter';
 import LoadingView from '../view/loading-view';
-import {FILTERS, SORTS, UpdateType, UserAction} from '../helpers/const';
+import {FILTERS, SORTS, UpdateType, UserAction, TimeLimit} from '../helpers/const';
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 
 export default class ContentPresenter {
   #activeFilterType = Object.keys(FILTERS)[0];
@@ -28,6 +29,10 @@ export default class ContentPresenter {
   #sortComponent = null;
   #routeListComponent = null;
   #loadingComponent = new LoadingView();
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT,
+  });
 
   #offersData = null;
   #destinationsData = null;
@@ -154,6 +159,7 @@ export default class ContentPresenter {
   };
 
   #handleViewAction = async (actionType, updateType, data) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.ADD_ROUTE_POINT:
         this.#createFormPresenter.setSaving();
@@ -191,6 +197,7 @@ export default class ContentPresenter {
         this.#handleSetCurrentRoutePointId(data);
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {

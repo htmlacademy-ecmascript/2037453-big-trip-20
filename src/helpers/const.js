@@ -81,6 +81,11 @@ export const Mode = {
   ADD: 'ADD',
 };
 
+export const TimeLimit = {
+  LOWER_LIMIT: 100,
+  UPPER_LIMIT: 1000,
+};
+
 export const AUTORISATION = 'Basic 30816ecde53fcc40f0b93eb00148afe2';
 
 export const END_POINT = 'https://20.ecmascript.pages.academy/big-trip';
