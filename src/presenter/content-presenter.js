@@ -10,9 +10,12 @@ import LoadingView from '../view/loading-view';
 import {FILTERS, SORTS, UpdateType, UserAction, TimeLimit} from '../helpers/const';
 import UiBlocker from '../framework/ui-blocker/ui-blocker';
 
+const SORT_DEFAULT = Object.keys(SORTS)[0];
+const FILTER_DEFAULT = Object.keys(FILTERS)[0];
+
 export default class ContentPresenter {
-  #activeFilterType = Object.keys(FILTERS)[0];
-  #activeSortType = Object.keys(SORTS)[0];
+  #activeFilterType = FILTER_DEFAULT;
+  #activeSortType = SORT_DEFAULT;
   #noRoutePoints = false;
   #isLoading = true;
   #selectedRoutePointId = null;
@@ -203,6 +206,7 @@ export default class ContentPresenter {
         this.#handleModelEvent(updateType);
         break;
       case UserAction.FILTER_ROUTE_POINTS:
+        this.#activeSortType = SORT_DEFAULT;
         this.#activeFilterType = data;
         this.#handleModelEvent(updateType);
         break;
