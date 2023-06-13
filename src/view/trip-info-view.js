@@ -1,6 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
 import {getOffersByType, totalPrice, tripInfoDateFormat} from '../helpers/utils';
-import dayjs from 'dayjs';
 
 function createTripInfoTemplate(date, price, title) {
   return ` <section class="trip-main__trip-info  trip-info">
