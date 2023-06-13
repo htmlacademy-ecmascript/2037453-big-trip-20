@@ -80,7 +80,14 @@ function createEditFormTemplate(routePoint, allOffers, allDestinations) {
   const availableOffers = getOffersByType(allOffers, type);
   const destinationName = getDestinationById(allDestinations, destination)?.name || '';
   const typesListMarkup = allOffers.map((el) => createTypeTemplate(el, {id, type}, isDisabled));
-  const eventOffersListMarkup = availableOffers.map((el) => createOfferTemplate(el, {id, type, offers}, isDisabled));
+  const eventOffersList = availableOffers.map((el) => createOfferTemplate(el, {id, type, offers}, isDisabled));
+  const eventOffersListMarkup = eventOffersList.length ? `<section class="event__section  event__section--offers">
+                                  <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+                                  <div class="event__available-offers">
+                                    ${eventOffersList.join('')}
+                                  </div>
+                                </section>` : '';
+
   const destinationsListMarkup = allDestinations.map((el) => (`<option value="${el.name}"></option>`));
   const rollUpButtonMarkup = isNewPoint ? '' : `<button class="event__rollup-btn" type="button"${isDisabled}><span class="visually-hidden">Open event</span></button>`;
 
