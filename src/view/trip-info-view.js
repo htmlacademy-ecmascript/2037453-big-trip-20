@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view';
-import {getOffersByType, totalPrice} from '../helpers/utils';
+import {getOffersByType, totalPrice, tripInfoDateFormat} from '../helpers/utils';
 import dayjs from 'dayjs';
 
 function createTripInfoTemplate(date, price, title) {
@@ -7,7 +7,7 @@ function createTripInfoTemplate(date, price, title) {
             <div class="trip-info__main">
               <h1 class="trip-info__title">${title.join('&nbsp;&mdash;&nbsp;')}</h1>
 
-              <p class="trip-info__dates">${date.join('&nbsp;&mdash;&nbsp;')}</p>
+              <p class="trip-info__dates">${date}</p>
             </div>
 
           <p class="trip-info__cost">
@@ -30,10 +30,9 @@ export default class TripInfoView extends AbstractView {
       this.#title = [this.#title[0], '...', this.#title[count - 1]];
     }
 
-    // @todo Допилить форматы даты с проверкой на день, месяц, год.
     const dateStart = routePoints[0].dateStart;
     const dateStop = routePoints[count - 1].dateStop;
-    this.#date = [dayjs(dateStart).format('DD MMM'), dayjs(dateStop).format('DD MMM')];
+    this.#date = tripInfoDateFormat(dateStart, dateStop);
 
     const routePointsPrices = routePoints.map((routePoint) => {
       const type = routePoint.type;
