@@ -6,7 +6,6 @@ import {
   timeFormat,
   durationFormat,
   dateISOFormat,
-  totalPrice,
   getDestinationById
 } from '../helpers/utils';
 
