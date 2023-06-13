@@ -68,6 +68,7 @@ export default class CreateFormPresenter {
     this.#createFormComponent._restoreHandlers();
     render(this.#createFormComponent, this.#routeListContainer, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#escPressHandler);
+    //   @todo Сделать сброс сортировки и фильтров по нажатию кнопки add
   };
 
   #handleCloseCreateForm = () => {
