@@ -174,6 +174,10 @@ export default class ContentPresenter {
 
   #handleViewAction = async (actionType, updateType, data) => {
     switch (actionType) {
+      case UserAction.OPEN_CREATE_FORM:
+        this.#handleModelEvent(updateType);
+        this.#createFormPresenter.openCreateForm();
+        break;
       case UserAction.ADD_ROUTE_POINT:
         this.#createFormPresenter.setSaving();
         this.#uiBlocker.block();
