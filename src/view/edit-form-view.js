@@ -162,7 +162,7 @@ export default class EditFormView extends AbstractStatefulView {
         type: offers[0].type,
         offers: [],
         destination: null,
-        price: null,
+        price: '',
         isFavorite: false,
         isNewPoint: true
       });
