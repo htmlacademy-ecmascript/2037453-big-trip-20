@@ -5,7 +5,16 @@ const dateFormat = (date) => dayjs(date).format('YYYY-MM-DD');
 const timeFormat = (date) => dayjs(date).format('HH:mm');
 const dateISOFormat = (date) => dayjs(date).toISOString();
 const dateTimeFormat = (date) => dayjs(date).format('YY/MM/DD HH:mm');
-
+const tripInfoDateFormat = (start, stop) => {
+  if (dayjs(start).format('MMM') === dayjs(stop).format('MMM')) {
+    if (dayjs(start).format('DD') === dayjs(stop).format('DD')) {
+      return dayjs(stop).format('DD MMM');
+    } else {
+      return `${dayjs(start).format('DD')} — ${dayjs(stop).format('DD MMM')}`;
+    }
+  }
+  return `${dayjs(start).format('DD MMM')} — ${dayjs(stop).format('DD MMM')}`;
+};
 const durationFormat = (start, stop) => {
   const gap = dayjs(stop).diff(dayjs(start));
   let gapFormat = 'mm[m]';
@@ -29,6 +38,7 @@ export {
   dateFormat,
   timeFormat,
   dateTimeFormat,
+  tripInfoDateFormat,
   durationFormat,
   dateISOFormat,
   totalPrice,

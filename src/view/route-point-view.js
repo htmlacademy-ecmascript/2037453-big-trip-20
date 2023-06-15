@@ -6,7 +6,6 @@ import {
   timeFormat,
   durationFormat,
   dateISOFormat,
-  totalPrice,
   getDestinationById
 } from '../helpers/utils';
 
@@ -36,7 +35,7 @@ function createRoutePointTemplate({dateStart, dateStop, type, isFavorite, price}
                   <p class="event__duration">${durationFormat(dateStart, dateStop)}</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">${totalPrice(offers, price)}</span>
+                  &euro;&nbsp;<span class="event__price-value">${price}</span>
                 </p>
                 <h4 class="visually-hidden">Offers:</h4>
                 <ul class="event__selected-offers">${offersListMarkup.join('')}</ul>

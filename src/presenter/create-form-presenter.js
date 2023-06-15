@@ -52,7 +52,7 @@ export default class CreateFormPresenter {
     this.#createFormComponent.shake(resetFormState);
   }
 
-  #handleOpenCreateForm = () => {
+  openCreateForm() {
     this.#createFormComponent = new EditFormView({
       offers: this.#offers,
       destinations: this.#destinations,
@@ -65,9 +65,15 @@ export default class CreateFormPresenter {
     this.#createFormComponent.updateElement({
       isNewPoint: true
     });
-    this.#createFormComponent._restoreHandlers();
     render(this.#createFormComponent, this.#routeListContainer, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#escPressHandler);
+  }
+
+  #handleOpenCreateForm = () => {
+    this.#handleViewAction(
+      UserAction.OPEN_CREATE_FORM,
+      UpdateType.MAJOR
+    );
   };
 
   #handleCloseCreateForm = () => {
