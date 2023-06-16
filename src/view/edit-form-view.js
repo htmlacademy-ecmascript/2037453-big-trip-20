@@ -16,14 +16,14 @@ function createDestinationTemplate(allDestinations, destination) {
   const {
     name = '',
     description = '',
-    photos = []
+    pictures = []
   } = getDestinationById(allDestinations, destination);
-  const eventPhotosListMarkup = photos.map((el) => (`<img class="event__photo" src="${el}" alt="Event photo">`));
+  const eventPicturesListMarkup = pictures.map((picture) => (`<img class="event__photo" src="${picture.src}" alt="${picture.description}">`));
   return `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">${name}</h3>
             <p class="event__destination-description">${description}</p>
             <div class="event__photos-container">
-              <div class="event__photos-tape">${eventPhotosListMarkup.join('')}</div>
+              <div class="event__photos-tape">${eventPicturesListMarkup.join('')}</div>
             </div>                    
           </section>`;
 }
