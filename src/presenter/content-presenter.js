@@ -111,7 +111,11 @@ export default class ContentPresenter {
       this.#stubComponent = new StubView(this.#activeFilterType, this.#noRoutePoints);
       render(this.#stubComponent, this.#routeListComponent.element);
     } else {
-      this.#tripInfoComponent = new TripInfoView([...this.#routePointsModel.routePoints], this.#offersData, this.#destinationsData);
+      this.#tripInfoComponent = new TripInfoView(
+        SORTS[SORT_DEFAULT]([...this.#routePointsModel.routePoints]),
+        this.#offersData,
+        this.#destinationsData
+      );
       render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
 
       this.#renderRoutePoints(routePoints);
