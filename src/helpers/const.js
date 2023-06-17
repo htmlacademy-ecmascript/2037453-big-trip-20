@@ -60,6 +60,10 @@ export const SORTS = {
   }),
   'Offers': false
 };
+export const TIME_GAP = {
+  'HOUR': 3600000,
+  'DAY': 86400000,
+};
 export const UserAction = {
   OPEN_CREATE_FORM: 'OPEN_CREATE_FORM',
   ADD_ROUTE_POINT: 'ADD_ROUTE_POINT',
