@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import {totalPrice} from './utils';
 
 const now = new Date();
+export const MAX_DESTINATION_CHAIN_LENGTH = 3;
 export const TYPE_ICONS = {
   'taxi': 'img/icons/taxi.png',
   'bus': 'img/icons/bus.png',

@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view';
 import {getOffersByType, totalPrice, tripInfoDateFormat} from '../helpers/utils';
+import {MAX_DESTINATION_CHAIN_LENGTH} from '../helpers/const';
 
 function createTripInfoTemplate(date, price, title) {
   return ` <section class="trip-main__trip-info  trip-info">
@@ -25,7 +26,7 @@ export default class TripInfoView extends AbstractView {
 
     this.#title = routePoints.map(({destination}) => destinations.find(({id}) => id === destination).name);
     const count = this.#title.length;
-    if (count > 3) {
+    if (count > MAX_DESTINATION_CHAIN_LENGTH) {
       this.#title = [this.#title[0], '...', this.#title[count - 1]];
     }
 
