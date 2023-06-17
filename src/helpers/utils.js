@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {TIME_GAP} from './const';
 
 const routeDateFormat = (date) => dayjs(date).format('DD MMM');
 const dateFormat = (date) => dayjs(date).format('YYYY-MM-DD');
@@ -18,10 +19,10 @@ const tripInfoDateFormat = (start, stop) => {
 const durationFormat = (start, stop) => {
   const gap = dayjs(stop).diff(dayjs(start));
   let gapFormat = 'mm[m]';
-  if (gap >= 3600000) {
+  if (gap >= TIME_GAP.HOUR) {
     gapFormat = 'HH[h] mm[m]';
   }
-  if (gap >= 86400000) {
+  if (gap >= TIME_GAP.DAY) {
     gapFormat = 'DD[d] HH[h] mm[m]';
   }
   return dayjs(gap).format(gapFormat);

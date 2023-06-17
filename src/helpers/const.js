@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import {totalPrice} from './utils';
 
 const now = new Date();
+export const MAX_DESTINATION_CHAIN_LENGTH = 3;
 export const TYPE_ICONS = {
   'taxi': 'img/icons/taxi.png',
   'bus': 'img/icons/bus.png',
@@ -59,6 +60,10 @@ export const SORTS = {
     return prevPrice - nextPrice;
   }),
   'Offers': false
+};
+export const TIME_GAP = {
+  'HOUR': 3600000,
+  'DAY': 86400000,
 };
 export const UserAction = {
   OPEN_CREATE_FORM: 'OPEN_CREATE_FORM',

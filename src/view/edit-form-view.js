@@ -176,7 +176,7 @@ export default class EditFormView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditFormTemplate(this._state, this.#offers, this.#destinations, this.#isNewPoint);
+    return createEditFormTemplate(this._state, this.#offers, this.#destinations);
   }
 
   static parseRoutePointToState(routePoint) {
